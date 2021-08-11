@@ -1,5 +1,6 @@
 import fc from 'fast-check';
-import {multiselect} from '../index';
+import { multiselect } from '../index';
+
 describe('Select an Item', () => {
   test('should be able to select one item in a non empty list', () => {
 
@@ -26,7 +27,7 @@ describe('Select an Item', () => {
                   selected: [],
                 },
                 {
-                  type: 'SINGLE SELECT',
+                  type: "SELECT ONE",
                   id,
                 }
               )
@@ -69,7 +70,7 @@ describe('Select an Item', () => {
                   selected: [selectedId],
                 },
                 {
-                  type: 'SINGLE SELECT',
+                  type: "SELECT ONE",
                   id,
                 }
               )
