@@ -1,7 +1,7 @@
 import fc from 'fast-check';
 import { multiselect, Context } from '../index';
 
-describe('TOGGLE SELECTION', () => {
+describe('Toggle Selection', () => {
   test('should be able to add to selection one item in a non empty list', () => {
 
     fc.assert(

@@ -6,6 +6,7 @@ export type Context = {
 type Command =
   | { type: "SELECT ONE", id: string }
   | { type: "TOGGLE SELECTION", id: string }
+  | { type: "DESELECT ALL" }
 
 export function multiselect(context: Context, command: Command): Context {
   if (command.type === "SELECT ONE" && context.list.includes(command.id)) {
@@ -30,6 +31,11 @@ export function multiselect(context: Context, command: Command): Context {
       ...context,
       selected: context.selected.concat([command.id])
     };
+  } else if (command.type === "DESELECT ALL") {
+    return {
+      ...context,
+      selected: []
+    }
   } else {
     return context;
   }

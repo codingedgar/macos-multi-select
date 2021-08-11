@@ -1,7 +1,7 @@
 import fc from 'fast-check';
 import { multiselect } from '../index';
 
-describe('Select an Item', () => {
+describe('Select One Item', () => {
   test('should be able to select one item in a non empty list', () => {
 
     fc.assert(
