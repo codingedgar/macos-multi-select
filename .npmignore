@@ -1,0 +1,4 @@
+!dist
+src
+jest.config.js
+ts.config.js

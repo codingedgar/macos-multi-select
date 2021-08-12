@@ -9,7 +9,8 @@
   "scripts": {
     "test": "jest",
     "test-watch": "jest --watch",
-    "build": "rm -r dist && tsc"
+    "build": "rm -r dist && tsc",
+    "prepare": "yarn build"
   },
   "bugs": {
     "url": "https://github.com/davidkpiano/xstate/issues"
