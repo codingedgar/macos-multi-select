@@ -49,7 +49,7 @@ export function multiselect(context: Context, command: Command): Context {
     const adjacentPivot = findNextPivot(
       context.list,
       selected,
-      context.adjacentPivot
+      command.id
     );
 
     return {

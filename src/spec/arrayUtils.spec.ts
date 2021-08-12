@@ -168,17 +168,17 @@ describe('find next pivot', () => {
         .chain(sortedArray =>
           fc
             .nat(sortedArray.length - 2)
-            .chain(index =>
+            .chain(previousPivot =>
               fc
-                .integer(index + 1, sortedArray.length -1)
+                .integer(previousPivot + 1, sortedArray.length - 1)
                 .chain(nextPivot =>
                   fc.
                     tuple(
-                      fc.shuffledSubarray(sortedArray.slice(0, index)),
-                      fc.shuffledSubarray(sortedArray.slice(nextPivot +1, sortedArray.length - 1))
+                      fc.shuffledSubarray(sortedArray.slice(0, previousPivot)),
+                      fc.shuffledSubarray(sortedArray.slice(nextPivot + 1, sortedArray.length - 1))
                     )
                     .map(([left, right]) => ({
-                        previousPivot: sortedArray[index],
+                        previousPivot: sortedArray[previousPivot],
                         sortedArray: sortedArray,
                         nextPivot: sortedArray[nextPivot],
                         selection: left.concat([sortedArray[nextPivot]]).concat(right)
