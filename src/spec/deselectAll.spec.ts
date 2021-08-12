@@ -1,4 +1,5 @@
 import fc from 'fast-check';
+import { head } from 'ramda';
 import { multiselect, Context } from '../index';
 
 describe('Deselect All', () => {
@@ -23,22 +24,14 @@ describe('Deselect All', () => {
           list,
           selected
         }) => {
-          const context = (selected.length)
-            ? {
-              list,
-              selected,
-              adjacentPivot: selected[selected.length - 1],
-              lastSelected: selected[selected.length - 1], 
-            }
-            : {
-              list,
-              selected,
-              adjacentPivot: undefined,
-              lastSelected: undefined,
-            }
+
           expect(
             multiselect(
-              context,
+              {
+                list,
+                selected,
+                adjacentPivot: (selected.length) ? selected[selected.length - 1] : head(list)!,
+              },
               {
                 type: "DESELECT ALL",
               }
@@ -47,8 +40,7 @@ describe('Deselect All', () => {
           .toEqual({
             list,
             selected: [],
-            adjacentPivot: undefined,
-            lastSelected: undefined
+            adjacentPivot: head(list),
           })
         }
       )

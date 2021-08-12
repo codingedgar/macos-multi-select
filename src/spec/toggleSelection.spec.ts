@@ -1,4 +1,5 @@
 import fc from 'fast-check';
+import { head } from 'ramda';
 import { multiselect, Context } from '../index';
 
 describe('Toggle Selection', () => {
@@ -36,18 +37,15 @@ describe('Toggle Selection', () => {
             {
               list,
               selected: [],
-              adjacentPivot: undefined,
-              lastSelected: undefined,
+              adjacentPivot: head(list)!,
             }
           );
 
-          const adjacentPivot = toSelect.length ? toSelect[toSelect.length -1]: undefined;
           expect(finalContext)
           .toEqual({
             list,
             selected: toSelect,
-            adjacentPivot,
-            lastSelected: adjacentPivot
+            adjacentPivot: toSelect.length ? toSelect[toSelect.length -1]: head(list)!,
           })
           
           expect(
@@ -66,8 +64,7 @@ describe('Toggle Selection', () => {
           .toEqual({
             list,
             selected: [],
-            adjacentPivot: undefined,
-            lastSelected: undefined
+            adjacentPivot: head(list)!,
           })
 
         }

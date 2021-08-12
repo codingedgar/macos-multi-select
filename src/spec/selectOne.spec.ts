@@ -1,4 +1,5 @@
 import fc from 'fast-check';
+import { head } from 'ramda';
 import { multiselect } from '../index';
 
 describe('Select One Item', () => {
@@ -25,8 +26,7 @@ describe('Select One Item', () => {
               multiselect({
                   list,
                   selected: [],
-                  adjacentPivot: undefined,
-                  lastSelected: undefined,
+                  adjacentPivot: head(list)!,
                 },
                 {
                   type: "SELECT ONE",
@@ -38,7 +38,6 @@ describe('Select One Item', () => {
                 list,
                 selected: [id],
                 adjacentPivot: id,
-                lastSelected: id,
               })
           }
         )
@@ -73,7 +72,6 @@ describe('Select One Item', () => {
                   list,
                   selected: [selectedId],
                   adjacentPivot: selectedId,
-                  lastSelected: selectedId,
                 },
                 {
                   type: "SELECT ONE",
@@ -85,7 +83,6 @@ describe('Select One Item', () => {
                 list,
                 selected: [id],
                 adjacentPivot: id,
-                lastSelected: id
               })
           }
         )

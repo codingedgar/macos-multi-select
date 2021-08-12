@@ -1,15 +1,10 @@
-import { head, take } from "ramda";
+import { difference, head, take, union, without } from "ramda";
+import { findAdjacentToPivotInSortedArray, findNextPivot } from "./arrayUtils";
 
 export type Context = {
   list: string[],
   selected: string[],
-  adjacentPivot: undefined,
-  lastSelected: undefined,
-} | {
-  list: string[],
-  selected: string[],
   adjacentPivot: string,
-  lastSelected: string,
 }
 
 type Command =
@@ -23,6 +18,7 @@ function listIncludesAndIsNotEmpty(list: string[], item: string) {
 }
 
 export function multiselect(context: Context, command: Command): Context {
+
   if (
     command.type === "SELECT ONE" &&
     listIncludesAndIsNotEmpty(context.list, command.id)
@@ -31,7 +27,6 @@ export function multiselect(context: Context, command: Command): Context {
       ...context,
       selected: [command.id],
       adjacentPivot: command.id,
-      lastSelected: command.id,
     };
   } else if (
       command.type === 'TOGGLE SELECTION' &&
@@ -43,23 +38,24 @@ export function multiselect(context: Context, command: Command): Context {
     return {
       ...context,
       selected: [],
-      adjacentPivot: undefined,
-      lastSelected: undefined
+      adjacentPivot: head(context.list)!,
     };
   } else if (
       command.type === 'TOGGLE SELECTION' &&
       listIncludesAndIsNotEmpty(context.list, command.id) &&
       context.selected.includes(command.id)
   ) {
-    const index = context.selected.indexOf(command.id);
-    const adjacentPivot= (index < (context.selected.length - 1))
-        ? context.selected[index + 1]
-        : context.selected[index - 1];
+    const selected = context.selected.filter(x => x !== command.id);
+    const adjacentPivot = findNextPivot(
+      context.list,
+      selected,
+      context.adjacentPivot
+    );
+
     return {
       ...context,
-      selected: context.selected.filter(x => x !== command.id),
+      selected,
       adjacentPivot,
-      lastSelected: adjacentPivot
     };
   } else if (
     command.type === 'TOGGLE SELECTION' &&
@@ -69,14 +65,12 @@ export function multiselect(context: Context, command: Command): Context {
       ...context,
       selected: context.selected.concat([command.id]),
       adjacentPivot: command.id,
-      lastSelected: command.id
     };
   } else if (command.type === "DESELECT ALL") {
     return {
       ...context,
       selected: [],
-      adjacentPivot: undefined,
-      lastSelected: undefined
+      adjacentPivot: head(context.list)!,
     }
   } else if (
     command.type === "SELECT ADJACENT" &&
@@ -87,20 +81,31 @@ export function multiselect(context: Context, command: Command): Context {
     return {
       ...context,
       selected: take(n, context.list),
-      adjacentPivot: head(context.list)!,
-      lastSelected: command.id,
     }
   } else if (
     command.type === "SELECT ADJACENT" &&
-    listIncludesAndIsNotEmpty(context.list, command.id) &&
-    context.adjacentPivot
+    listIncludesAndIsNotEmpty(context.list, command.id)
   ) {
-    const start = context.list.indexOf(context.adjacentPivot);
-    const n = context.list.indexOf(command.id);
+
+    const pivotIndex = context.list.indexOf(context.adjacentPivot);
+    const selectionIndex = context.list.indexOf(command.id);
+
+    const adjacent = findAdjacentToPivotInSortedArray(
+      context.list,
+      context.selected,
+      context.adjacentPivot
+    );
+    
+    const nextSelection = context.list.slice(
+      Math.min(pivotIndex, selectionIndex),
+      Math.max(pivotIndex, selectionIndex) + 1
+    );
+
+    const toRemove = difference(adjacent, nextSelection);
+
     return {
       ...context,
-      selected: context.list.slice(Math.min(start, n), Math.max(start, n) + 1),
-      lastSelected: command.id
+      selected: union(without(toRemove, context.selected), nextSelection)
     }
   } else {
     return context;

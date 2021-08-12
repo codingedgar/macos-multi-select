@@ -1,4 +1,4 @@
-import fc from 'fast-check';
+import fc, { array } from 'fast-check';
 import { take, last, head, startsWith } from "ramda";
 import { multiselect } from '../index';
 
@@ -27,8 +27,7 @@ describe('Select Adjacent', () => {
             multiselect({
                 list,
                 selected: [],
-                adjacentPivot: undefined,
-                lastSelected: undefined
+                adjacentPivot: head(list)!,
               },
               {
                 type: "SELECT ADJACENT",
@@ -38,9 +37,8 @@ describe('Select Adjacent', () => {
           )
           .toEqual({
             list,
-            selected: selection,
+            selected: expect.arrayContaining(selection),
             adjacentPivot: head(selection)!,
-            lastSelected: id
           })
         }
       )
@@ -93,8 +91,7 @@ describe('Select Adjacent', () => {
               multiselect({
                 list,
                 selected: [],
-                adjacentPivot: undefined,
-                lastSelected: undefined
+                adjacentPivot: head(list)!,
               },
               {
                 type: "SELECT ONE",
@@ -109,13 +106,86 @@ describe('Select Adjacent', () => {
           )
           .toEqual({
             list,
-            selected: selection,
+            selected: expect.arrayContaining(selection),
             adjacentPivot: start,
-            lastSelected: end
           })
         }
       )
     );
-
   });
+
+  test.only('should perform a minus between the old and new selection', () => {
+    fc.assert(
+      fc.property(
+        fc.tuple(
+          fc.set(
+            fc.string(),
+            { minLength: 3 }
+          ),
+          fc.boolean()
+        )
+        .chain(([list, direction]) =>
+          fc
+            .integer(1, list.length - 2)
+            .chain(start =>
+              fc
+                .integer(start, list.length - 2)
+                .chain(end =>
+                  fc
+                    .integer(
+                      direction ? 0 : end + 1,
+                      direction ? start - 1 : list.length - 1
+                    )
+                    .chain(id =>
+                      fc
+                        .shuffledSubarray(
+                          list.slice(
+                            direction ? end + 2 : 0,
+                            direction ? list.length : start - 1
+                          )
+                        )
+                    .map((otherSelection) => ({
+                      list,
+                      selected: list.slice(start, end + 1).concat(otherSelection),
+                      adjacentPivot: list[direction ? start : end],
+                      id: list[id],
+                      nextSelection: otherSelection.concat(list.slice(
+                        direction ? id : end,
+                        (direction ? start : id) + 1
+                        ))
+                    }))
+                  )
+                )
+            )
+        )
+        ,
+        ({
+          id,
+          list,
+          adjacentPivot,
+          selected,
+          nextSelection,
+        }) => {
+
+          expect(
+            multiselect(
+              {
+                list,
+                adjacentPivot,
+                selected
+              },
+              {
+                type: 'SELECT ADJACENT',
+                id
+              }
+            )
+          ).toEqual({
+            list,
+            selected: expect.arrayContaining(nextSelection),
+            adjacentPivot
+          })
+        }
+      ),
+    )
+  })
 })
