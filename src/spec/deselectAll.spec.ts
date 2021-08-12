@@ -23,12 +23,22 @@ describe('Deselect All', () => {
           list,
           selected
         }) => {
+          const context = (selected.length)
+            ? {
+              list,
+              selected,
+              adjacentPivot: selected[selected.length - 1],
+              lastSelected: selected[selected.length - 1], 
+            }
+            : {
+              list,
+              selected,
+              adjacentPivot: undefined,
+              lastSelected: undefined,
+            }
           expect(
             multiselect(
-              {
-                list,
-                selected,
-              },
+              context,
               {
                 type: "DESELECT ALL",
               }
@@ -36,7 +46,9 @@ describe('Deselect All', () => {
           )
           .toEqual({
             list,
-            selected: []
+            selected: [],
+            adjacentPivot: undefined,
+            lastSelected: undefined
           })
         }
       )

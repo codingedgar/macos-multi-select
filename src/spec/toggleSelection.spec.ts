@@ -2,7 +2,7 @@ import fc from 'fast-check';
 import { multiselect, Context } from '../index';
 
 describe('Toggle Selection', () => {
-  test('should be able to add to selection one item in a non empty list', () => {
+  test('should be able to add and remove a selection one item in a non empty list', () => {
 
     fc.assert(
       fc.property(
@@ -19,34 +19,59 @@ describe('Toggle Selection', () => {
             ),
           })  
         ),
-          ({
+        ({
+          list,
+          toSelect,
+        }) => {
+          
+          const finalContext = toSelect.reduce(
+            (context: Context, id) =>
+              multiselect(
+                context,
+                {
+                  type: "TOGGLE SELECTION",
+                  id,
+                }
+              ),
+            {
+              list,
+              selected: [],
+              adjacentPivot: undefined,
+              lastSelected: undefined,
+            }
+          );
+
+          const adjacentPivot = toSelect.length ? toSelect[toSelect.length -1]: undefined;
+          expect(finalContext)
+          .toEqual({
             list,
-            toSelect,
-          }) => {
-
-            expect(
-              toSelect.reduce(
-                (context: Context, id) =>
-                  multiselect(
-                    context,
-                    {
-                      type: "TOGGLE SELECTION",
-                      id,
-                    }
-                  ),
+            selected: toSelect,
+            adjacentPivot,
+            lastSelected: adjacentPivot
+          })
+          
+          expect(
+            toSelect.reduce(
+              (context: Context, id) =>
+                multiselect(
+                  context,
                   {
-                    list,
-                    selected: []
+                    type: "TOGGLE SELECTION",
+                    id,
                   }
-                )
+                ),
+              finalContext
             )
-              .toEqual({
-                list,
-                selected: toSelect
-              })
-          }
-        )
-    )
+          )
+          .toEqual({
+            list,
+            selected: [],
+            adjacentPivot: undefined,
+            lastSelected: undefined
+          })
 
+        }
+      )
+    )
   });
 })

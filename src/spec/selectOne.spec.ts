@@ -25,6 +25,8 @@ describe('Select One Item', () => {
               multiselect({
                   list,
                   selected: [],
+                  adjacentPivot: undefined,
+                  lastSelected: undefined,
                 },
                 {
                   type: "SELECT ONE",
@@ -34,7 +36,9 @@ describe('Select One Item', () => {
             )
               .toEqual({
                 list,
-                selected: [id]
+                selected: [id],
+                adjacentPivot: id,
+                lastSelected: id,
               })
           }
         )
@@ -68,6 +72,8 @@ describe('Select One Item', () => {
               multiselect({
                   list,
                   selected: [selectedId],
+                  adjacentPivot: selectedId,
+                  lastSelected: selectedId,
                 },
                 {
                   type: "SELECT ONE",
@@ -77,7 +83,9 @@ describe('Select One Item', () => {
             )
               .toEqual({
                 list,
-                selected: [id]
+                selected: [id],
+                adjacentPivot: id,
+                lastSelected: id
               })
           }
         )
