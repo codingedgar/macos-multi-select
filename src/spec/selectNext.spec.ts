@@ -103,4 +103,66 @@ describe('Select Next Item', () => {
     )
   });
 
+  test('Should select next from the last selected (not the pivot) given the last command were select adjacent', () => {
+    fc.assert(
+      fc.property(
+        fc.tuple(
+          fc.boolean(),
+          fc.set(
+            fc.string(), { minLength: 1 }
+            )
+        )
+        .chain(([undefOrTop, list]) =>
+          fc.nat(list.length - 1)
+          .map(id => ({
+            list,
+            adjacentPivot: undefOrTop ? undefined : head(list),
+            id: list[id],
+          }))
+        )
+        ,
+        ({
+          adjacentPivot,
+          list,
+          id,
+        }) => {
+
+          const prevContext = multiselect(
+            {
+              list,
+              adjacentPivot: adjacentPivot,
+              selected: []
+            },
+            {
+              type: "SELECT ADJACENT",
+              id,
+            }
+          )
+
+          const currentSelectionPivot = list.indexOf(id)
+          const nextSelection = currentSelectionPivot < list.length - 1
+            ? currentSelectionPivot + 1
+            : list.length - 1;
+
+          const nextPivot = list[nextSelection];
+
+          expect(
+            multiselect(
+              prevContext,
+              {
+                type: "SELECT NEXT",
+              }
+            )
+          )
+          .toEqual({
+            list,
+            selected: [nextPivot],
+            adjacentPivot: nextPivot,
+          })
+
+        }
+      )
+    )
+  })
+
 })

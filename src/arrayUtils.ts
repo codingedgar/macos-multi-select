@@ -32,7 +32,8 @@ export function findNextPivot(
 export function findAdjacentToPivotInSortedArray(
   sortedArray: string[],
   subarray: string[],
-  item: string): string[] {
+  item: string
+): string[] {
     const indexOfItem = sortedArray.indexOf(item);
     let leftIndex = indexOfItem;
     let rightIndex = indexOfItem;

@@ -123,12 +123,13 @@ export function multiselect(context: Context, command: Command): Context {
   } else if (
     command.type === "SELECT NEXT" &&
     context.list.length &&
-    context.adjacentPivot !== undefined
+    context.selected.length
     ) {
-    const pivotIndex = context.list.indexOf(context.adjacentPivot)
+    const pivotIndex = context.list.indexOf(last(context.selected)!)
 
     if (pivotIndex < context.list.length - 1) {
       const nextItem = context.list[pivotIndex + 1];
+
       return {
         ...context,
         selected: [nextItem],
@@ -137,12 +138,14 @@ export function multiselect(context: Context, command: Command): Context {
     } else if (
       !(
         context.selected.length === 1 &&
-        last(context.selected) === last(context.list)
+        context.selected[0] === last(context.list)
       )
     ) {
+      const pivot = context.list[pivotIndex];
       return {
         ...context,
-        selected: [context.list[pivotIndex]],
+        selected: [pivot],
+        adjacentPivot: pivot,
       }
     } else {
       return context;
