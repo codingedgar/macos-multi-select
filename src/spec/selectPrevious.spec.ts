@@ -1,10 +1,10 @@
 import fc from 'fast-check';
 import { head, last } from 'ramda';
 import { Context, multiselect } from '../index';
-import { nonEmptySubsequentSubarray } from './arbitraries';
 
-describe('Select Next Item', () => {
-  test('should do nothing if no items', () => {
+describe('Select Previous Item', () => {
+  test('should do nothing if the list is empty', () => {
+
     const initialContext: Context = {
       adjacentPivot: undefined,
       list: [],
@@ -12,32 +12,35 @@ describe('Select Next Item', () => {
     };
 
     expect(multiselect(initialContext, {
-      type: "SELECT NEXT",
+      type: "SELECT PREVIOUS",
     }))
       .toEqual(initialContext)
 
   });
 
-  test('should start from the top', () => {
+  test('should start from the bottom', () => {
 
     fc.assert(
       fc.property(
         fc.tuple(
           fc.set(fc.string(), { minLength: 1 }),
           fc.boolean()
-        ),
-        ([list, undefOrTop]) => {
-          expect(multiselect({
-            adjacentPivot: undefOrTop ? undefined : head(list),
-            list,
-            selected: []
-          }, {
-            type: "SELECT NEXT",
+        )
+        .map(([list, undefOrTop]) => ({
+          list,
+          adjacentPivot: undefOrTop ? undefined : head(list),
+          selected: [],
+        })),
+        (initialContext) => {
+          const nextAdjacentPivot = last(initialContext.list)!;
+          
+          expect(multiselect(initialContext, {
+            type: "SELECT PREVIOUS",
           }))
             .toEqual({
-              list,
-              selected: [list[0]],
-              adjacentPivot: list[0],
+              list: initialContext.list,
+              selected: [nextAdjacentPivot],
+              adjacentPivot: nextAdjacentPivot,
             })
         }
       )
@@ -45,7 +48,8 @@ describe('Select Next Item', () => {
 
   });
 
-  test('should never select beyond last item', () => {
+
+  test('should never select beyond first item', () => {
     fc.assert(
       fc.property(
         fc.tuple(
@@ -55,7 +59,7 @@ describe('Select Next Item', () => {
           )
         )
         .chain(([extra, list]) =>
-          nonEmptySubsequentSubarray(list)
+          fc.shuffledSubarray(list)
           .map(selected => ({
             list,
             selected,
@@ -77,21 +81,24 @@ describe('Select Next Item', () => {
             selected
           }
 
-          const startOn = list.indexOf(last(selected)!) + 1
+          const lastSelected = last(selected);
+          const startOn = lastSelected !== undefined
+            ? list.indexOf(lastSelected) - 1
+            : list.length - 1
 
-          for (let index = startOn; index < list.length + extra; index++) {
+          for (let index = startOn; index > -list.length - extra; index--) {
             
             const nextContext = multiselect(prevContext, {
-              type: "SELECT NEXT",
+              type: "SELECT PREVIOUS",
             });
-
-            const selected = [index < list.length - 1 ? list[index]: last(list)];
-
+            
+            const pivot = index >= 0 ? list[index]: head(list);
+            
             expect(nextContext)
             .toEqual({
               list,
-              selected,
-              adjacentPivot: last(selected),
+              selected: [pivot],
+              adjacentPivot: pivot,
             })
             
             prevContext = nextContext;
@@ -101,6 +108,6 @@ describe('Select Next Item', () => {
         }
       )
     )
-  });
+  })
 
-})
+});
