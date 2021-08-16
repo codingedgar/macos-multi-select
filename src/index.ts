@@ -1,4 +1,4 @@
-import { difference, head, take, union, without } from "ramda";
+import { difference, head, last, take, union, without } from "ramda";
 import { findAdjacentToPivotInSortedArray, findNextPivot } from "./arrayUtils";
 
 export type Context = {
@@ -12,6 +12,7 @@ type Command =
   | { type: "TOGGLE SELECTION", id: string }
   | { type: "DESELECT ALL" }
   | { type: "SELECT ADJACENT", id: string }
+  | { type: "SELECT NEXT" }
 
 function listIncludesAndIsNotEmpty(list: string[], item: string) {
   return list.length > 0 && list.includes(item)
@@ -107,6 +108,44 @@ export function multiselect(context: Context, command: Command): Context {
     return {
       ...context,
       selected: union(without(toRemove, context.selected), nextSelection)
+    }
+  } else if(
+    command.type === "SELECT NEXT" &&
+    context.list.length &&
+    context.adjacentPivot === undefined
+  ) {
+    return {
+      ...context,
+      selected: [context.list[0]],
+      adjacentPivot: context.list[0],
+    }
+  } else if (
+    command.type === "SELECT NEXT" &&
+    context.list.length &&
+    context.adjacentPivot !== undefined
+    ) {
+    const pivotIndex = context.list.indexOf(context.adjacentPivot)
+
+    if (pivotIndex < context.list.length - 1) {
+      const nextItem = context.list[pivotIndex + 1];
+      return {
+        ...context,
+        selected: [nextItem],
+        adjacentPivot: nextItem
+      }
+    } else if (
+      !context.selected.length ||
+      !(
+        context.selected.length === 1 &&
+        last(context.selected) === last(context.list)
+      )
+    ) {
+      return {
+        ...context,
+        selected: [context.list[pivotIndex]],
+      }
+    } else {
+      return context;
     }
   } else {
     return context;

@@ -114,7 +114,7 @@ describe('Select Adjacent', () => {
     );
   });
 
-  test.only('should perform a minus between the old and new selection', () => {
+  test('should perform a minus between the old and new selection', () => {
     fc.assert(
       fc.property(
         fc.tuple(

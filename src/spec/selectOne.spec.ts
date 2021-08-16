@@ -8,9 +8,9 @@ describe('Select One Item', () => {
     fc.assert(
       fc.property(
         fc.set(
-          fc.string()
+          fc.string(),
+          { minLength: 1 }
         )
-        .filter(list => list.length > 0)
         .chain(list =>
           fc.record({
             list: fc.constant(list),
@@ -49,9 +49,9 @@ describe('Select One Item', () => {
     fc.assert(
       fc.property(
         fc.set(
-          fc.string()
+          fc.string(),
+          { minLength: 2 }
         )
-        .filter(list => list.length > 1)
         .chain(list =>
           fc.record({
             list: fc.constant(list),
