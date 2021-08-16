@@ -4,7 +4,7 @@ import { findAdjacentToPivotInSortedArray, findNextPivot } from "./arrayUtils";
 export type Context = {
   list: string[],
   selected: string[],
-  adjacentPivot: string,
+  adjacentPivot: string | undefined,
 }
 
 type Command =
@@ -84,7 +84,8 @@ export function multiselect(context: Context, command: Command): Context {
     }
   } else if (
     command.type === "SELECT ADJACENT" &&
-    listIncludesAndIsNotEmpty(context.list, command.id)
+    listIncludesAndIsNotEmpty(context.list, command.id)  &&
+    context.adjacentPivot !== undefined
   ) {
 
     const pivotIndex = context.list.indexOf(context.adjacentPivot);
