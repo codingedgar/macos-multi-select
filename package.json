@@ -1,6 +1,6 @@
 {
   "name": "macos-multi-select",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Given a list of ids, and an action, return a list of selected items with the same behaviour of macOS finder list view selection.",
   "main": "dist/index.js",
   "repository": "git@github.com:codingedgar/macos-multi-select.git",

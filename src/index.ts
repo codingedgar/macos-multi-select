@@ -82,6 +82,7 @@ export function multiselect(context: Context, command: Command): Context {
     return {
       ...context,
       selected: take(n, context.list),
+      adjacentPivot: head(context.list),
     }
   } else if (
     command.type === "SELECT ADJACENT" &&
@@ -160,9 +161,9 @@ export function multiselect(context: Context, command: Command): Context {
   } else if (
     command.type === "SELECT PREVIOUS" &&
     context.list.length &&
-    context.adjacentPivot !== undefined
+    context.selected.length
   ) {
-    const pivotIndex = context.list.indexOf(context.adjacentPivot)
+    const pivotIndex = context.list.indexOf(last(context.selected)!)
 
     if (pivotIndex > 0) {
       const prevItem = context.list[pivotIndex - 1];
