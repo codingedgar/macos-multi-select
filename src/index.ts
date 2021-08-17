@@ -104,6 +104,10 @@ export function multiselect(context: Context, command: Command): Context {
       Math.max(pivotIndex, selectionIndex) + 1
     );
 
+    if (pivotIndex > selectionIndex){
+      nextSelection.reverse()
+    }
+
     const toRemove = difference(adjacent, nextSelection);
 
     return {
@@ -124,7 +128,7 @@ export function multiselect(context: Context, command: Command): Context {
     command.type === "SELECT NEXT" &&
     context.list.length &&
     context.selected.length
-    ) {
+  ) {
     const pivotIndex = context.list.indexOf(last(context.selected)!)
 
     if (pivotIndex < context.list.length - 1) {

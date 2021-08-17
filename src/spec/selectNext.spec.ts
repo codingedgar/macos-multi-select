@@ -164,5 +164,78 @@ describe('Select Next Item', () => {
       )
     )
   })
+  
+  test('Should select next from the last selected even when the selection is bottom to top', () => {
+    fc.assert(
+      fc.property(
+        fc.set(
+          fc.string(),
+          { minLength: 2 }
+        )
+        .chain(list =>
+          fc.tuple(
+            fc.nat(list.length - 1),
+            fc.nat(list.length - 1),
+          )
+          .map(([first, second]) => ({
+            list,
+            adjacentPivot: undefined,
+            first: list[first],
+            second: list[second],
+          }))
+        )
+        ,
+        ({
+          adjacentPivot,
+          list,
+          first,
+          second
+        }) => {
+
+          const context1 = multiselect(
+            {
+              list,
+              adjacentPivot: adjacentPivot,
+              selected: []
+            },
+            {
+              type: "SELECT ONE",
+              id: first,
+            }
+          )
+          
+          const context2 = multiselect(
+            context1,
+            {
+              type: "SELECT ADJACENT",
+              id: second,
+            }
+          )
+
+          const currentSelectionPivot = list.indexOf(second)
+          const nextSelection = currentSelectionPivot < list.length - 1
+            ? currentSelectionPivot + 1
+            : list.length - 1;
+
+          const nextPivot = list[nextSelection];
+
+          expect(
+            multiselect(
+              context2,
+              {
+                type: "SELECT NEXT",
+              }
+            )
+          )
+          .toEqual({
+            list,
+            selected: [nextPivot],
+            adjacentPivot: nextPivot,
+          })
+
+        }
+      ),
+    )
+  })
 
 })
