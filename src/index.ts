@@ -7,7 +7,7 @@ export type Context = {
   adjacentPivot: string | undefined,
 }
 
-type Command =
+export type Command =
   | { type: "SELECT ONE", id: string }
   | { type: "TOGGLE SELECTION", id: string }
   | { type: "DESELECT ALL" }
