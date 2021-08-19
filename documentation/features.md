@@ -184,7 +184,7 @@
 
 # Select Previous Key
 ## Scenarios
-### should do nothing if the list is empty
+### Should do nothing if the list is empty
 
 |  |  |
 | --- | ---|
@@ -193,7 +193,7 @@
 | Hot Key | `Arrow Up` |
 
 ![demo](./images/select_previous_key_scenario_1.gif)
-### should start from the bottom
+### Should start from the bottom
 
 |  |  |
 | --- | ---|
@@ -202,7 +202,7 @@
 | Hot Key | `Arrow Up` |
 
 ![demo](./images/select_previous_key_scenario_2.gif)
-### should never select beyond first item
+### Should never select beyond first item
 
 |  |  |
 | --- | ---|
@@ -230,3 +230,18 @@
 | Hot Key | `Arrow Up` |
 
 ![demo](./images/select_previous_key_scenario_6.gif)
+
+# Select Next Adjacent Key
+### Scenarios
+## Should start from top
+## `Adjacent range` union
+# Select Previous Adjacent Key
+### Scenarios
+## Should start from bottom
+## `Adjacent range` union
+
+# Changes in Index
+## Scenarios
+### Key added to the index in `Adjacent Range`
+### Key added outside of `Adjacent Range`
+### Non-selected Key removed from the index
