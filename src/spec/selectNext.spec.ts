@@ -4,7 +4,7 @@ import { Context, multiselect } from '../index';
 import { nonEmptySubsequentSubarray } from './arbitraries';
 
 describe('Select Next Item', () => {
-  test('should do nothing if no items', () => {
+  test('Should do nothing if no items', () => {
     const initialContext: Context = {
       adjacentPivot: undefined,
       list: [],
@@ -18,7 +18,7 @@ describe('Select Next Item', () => {
 
   });
 
-  test('should start from the top', () => {
+  test('Should start from the top', () => {
 
     fc.assert(
       fc.property(
@@ -45,7 +45,7 @@ describe('Select Next Item', () => {
 
   });
 
-  test('should never select beyond last item', () => {
+  test('Should never select beyond last item', () => {
     fc.assert(
       fc.property(
         fc.tuple(

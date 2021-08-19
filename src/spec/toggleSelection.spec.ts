@@ -3,7 +3,7 @@ import { head } from 'ramda';
 import { multiselect, Context } from '../index';
 
 describe('Toggle Selection', () => {
-  test('should be able to add and remove a selection one item in a non empty list', () => {
+  test('Should be able to add and remove a selection one item in a non empty list', () => {
 
     fc.assert(
       fc.property(
@@ -72,8 +72,8 @@ describe('Toggle Selection', () => {
     )
   });
 
-
-  test('should find pivot in next selection even when pivot is in the initial state due to select adjacent on initial state', () => {
+// TODO: https://github.com/codingedgar/macos-multi-select/issues/27
+  test('Should find pivot in next selection even when pivot is in the initial state due to select adjacent on initial state', () => {
     fc.assert(
       fc.property(
         fc.set(

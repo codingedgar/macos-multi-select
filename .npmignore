@@ -1,4 +1,5 @@
+*
 !dist
-src
-jest.config.js
-ts.config.js
+!package.json
+!.npmignore
+!README.md

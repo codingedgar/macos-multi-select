@@ -3,7 +3,7 @@ import { take, last, head, startsWith } from "ramda";
 import { multiselect } from '../index';
 
 describe('Select Adjacent', () => {
-  test('should select from top to bottom in an empty list', () => {
+  test('Should select from top to bottom in an empty list', () => {
 
     fc.assert(
       fc.property(
@@ -45,7 +45,7 @@ describe('Select Adjacent', () => {
     )
   });
   
-  test('should select from the last adjacent pivot', () => {
+  test('Should select from the last adjacent pivot', () => {
 
     fc.assert(
       fc.property(
@@ -114,7 +114,7 @@ describe('Select Adjacent', () => {
     );
   });
 
-  test('should perform a minus between the old and new selection', () => {
+  test('Should perform a minus between the old and new selection', () => {
     fc.assert(
       fc.property(
         fc.tuple(
