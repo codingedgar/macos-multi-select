@@ -93,10 +93,16 @@ export function multiselect(context: Context, command: Command): Context {
     const pivotIndex = context.list.indexOf(context.adjacentPivot);
     const selectionIndex = context.list.indexOf(command.id);
 
-    const adjacent = findAdjacentToPivotInSortedArray(
+    const adjacentToStart = findAdjacentToPivotInSortedArray(
       context.list,
       context.selected,
       context.adjacentPivot
+    );
+    
+    const adjacentToEnd = findAdjacentToPivotInSortedArray(
+      context.list,
+      context.selected,
+      command.id,
     );
     
     const nextSelection = context.list.slice(
@@ -108,7 +114,7 @@ export function multiselect(context: Context, command: Command): Context {
       nextSelection.reverse()
     }
 
-    const toRemove = difference(adjacent, nextSelection);
+    const toRemove = union(adjacentToStart, adjacentToEnd);
 
     return {
       ...context,

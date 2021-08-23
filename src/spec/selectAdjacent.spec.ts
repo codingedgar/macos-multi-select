@@ -1,6 +1,7 @@
 import fc, { array } from 'fast-check';
-import { take, last, head, startsWith } from "ramda";
-import { multiselect } from '../index';
+import { take, last, head, reverse } from "ramda";
+import { Context, multiselect } from '../index';
+import { indexWithAdjacentConnections, takeFromTo } from './arbitraries';
 
 describe('Select Adjacent', () => {
   test('Should select from top to bottom in an empty list', () => {
@@ -183,6 +184,120 @@ describe('Select Adjacent', () => {
             list,
             selected: expect.arrayContaining(nextSelection),
             adjacentPivot
+          })
+        }
+      ),
+    )
+  })
+
+  test('Should perform a minus between the old and new end selection group, when selection is ascendent', () => {
+    fc.assert(
+      fc.property(
+        indexWithAdjacentConnections()
+        ,
+        ({
+          list,
+          adjacentGroup1,
+          adjacentGroup2,
+          adjacentGroup3,
+          adjacentGroup4,
+          start,
+          end,
+        }) => {
+
+          const expectedSelection = takeFromTo(list, start, end);
+
+          let context: Context = {
+            adjacentPivot: undefined,
+            list,
+            selected: []
+          }
+
+          context = [
+            ...adjacentGroup1,
+            ...adjacentGroup2,
+            ...adjacentGroup3,
+            ...adjacentGroup4,
+            start
+          ].reduce(
+            (ctx, id) => multiselect(
+              ctx,
+              {
+                type: "TOGGLE SELECTION",
+                id
+              }
+            ),
+            context
+          );
+
+          const result = multiselect(
+            context,
+            {
+              type: 'SELECT ADJACENT',
+              id: end
+            }
+          )
+          expect(result).toEqual({
+            list,
+            adjacentPivot: start,
+            selected: expectedSelection,
+          })
+        }
+      ),
+    )
+  })
+
+  test('Should perform a minus between the old and new end selection group, when selection is descendent', () => {
+    fc.assert(
+      fc.property(
+        indexWithAdjacentConnections()
+        ,
+        ({
+          list,
+          adjacentGroup1,
+          adjacentGroup2,
+          adjacentGroup3,
+          adjacentGroup4,
+          start,
+          end,
+        }) => {
+
+          const expectedSelection = reverse(takeFromTo(list, start, end));
+
+          let context: Context = {
+            adjacentPivot: undefined,
+            list,
+            selected: []
+          }
+
+          context = [
+            ...adjacentGroup1,
+            ...adjacentGroup2,
+            ...adjacentGroup3,
+            ...adjacentGroup4,
+            end,
+          ].reduce(
+            (ctx, id) => multiselect(
+              ctx,
+              {
+                type: "TOGGLE SELECTION",
+                id
+              }
+            ),
+            context
+          );
+
+          const result = multiselect(
+            context,
+            {
+              type: 'SELECT ADJACENT',
+              id: start
+            }
+          )
+          expect(result).toEqual({
+            list,
+            adjacentPivot: end,
+            selected: expectedSelection,
           })
         }
       ),
