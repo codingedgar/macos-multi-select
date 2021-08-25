@@ -3,25 +3,26 @@ import { head } from 'ramda';
 import { multiselect, Context } from '../index';
 
 describe('Toggle Selection', () => {
-  test('Should be able to add and remove a selection one item in a non empty list', () => {
+  test('Should be able to add and remove a selection one key in a non empty index', () => {
 
     fc.assert(
       fc.property(
         fc.set(
           fc.string()
         )
-        .filter(list => list.length > 0)
-        .chain(list =>
+        .filter(index => index.length > 0)
+        .chain(index =>
           fc.record({
-            list: fc.constant(list),
+            index: fc.constant(index),
             toSelect: fc.set(
-              fc.integer(0, list.length-1)
-              .map(index => list[index]),
+              fc
+                .integer(0, index.length-1)
+                .map(i => index[i]),
             ),
           })  
         ),
         ({
-          list,
+          index,
           toSelect,
         }) => {
           
@@ -35,17 +36,17 @@ describe('Toggle Selection', () => {
                 }
               ),
             {
-              list,
+              index,
               selected: [],
-              adjacentPivot: head(list)!,
+              adjacentPivot: head(index)!,
             }
           );
 
           expect(finalContext)
           .toEqual({
-            list,
+            index,
             selected: toSelect,
-            adjacentPivot: toSelect.length ? toSelect[toSelect.length -1]: head(list)!,
+            adjacentPivot: toSelect.length ? toSelect[toSelect.length -1]: head(index)!,
           })
           
           expect(
@@ -62,9 +63,9 @@ describe('Toggle Selection', () => {
             )
           )
           .toEqual({
-            list,
+            index,
             selected: [],
-            adjacentPivot: head(list)!,
+            adjacentPivot: head(index)!,
           })
 
         }
@@ -80,29 +81,29 @@ describe('Toggle Selection', () => {
           fc.string(),
           { minLength: 2 }
         )
-        .chain(sortedArray =>
+        .chain(index =>
           fc
-            .nat(sortedArray.length -2)
+            .nat(index.length -2)
             .chain(previousSelection => 
               fc
-                .integer(previousSelection + 1, sortedArray.length - 1)
+                .integer(previousSelection + 1, index.length - 1)
                 .chain(nextPivot =>
                   fc.
                     tuple(
-                      fc.constant(sortedArray.slice(0, previousSelection)),
-                      fc.shuffledSubarray(sortedArray.slice(nextPivot + 1, sortedArray.length - 1))
+                      fc.constant(index.slice(0, previousSelection)),
+                      fc.shuffledSubarray(index.slice(nextPivot + 1, index.length - 1))
                     )
                     .map(([left, right]) => ({
-                        sortedArray: sortedArray,
-                        previousPivot: head(sortedArray)!,
+                        index,
+                        previousPivot: head(index)!,
                         prevSelection: left
-                          .concat([sortedArray[previousSelection]])
-                          .concat([sortedArray[nextPivot]])
+                          .concat([index[previousSelection]])
+                          .concat([index[nextPivot]])
                           .concat(right),
-                        deselectId: sortedArray[previousSelection],
-                        nextPivot: sortedArray[nextPivot],
+                        deselectId: index[previousSelection],
+                        nextPivot: index[nextPivot],
                         nextSelection: left
-                          .concat([sortedArray[nextPivot]])
+                          .concat([index[nextPivot]])
                           .concat(right),
                     }))
                 ),
@@ -111,7 +112,7 @@ describe('Toggle Selection', () => {
         ,
         ({
           previousPivot,
-          sortedArray,
+          index,
           prevSelection,
           nextSelection,
           nextPivot,
@@ -120,7 +121,7 @@ describe('Toggle Selection', () => {
           expect(
             multiselect({
               adjacentPivot: previousPivot,
-              list: sortedArray,
+              index: index,
               selected: prevSelection
             }, {
               type: "TOGGLE SELECTION",
@@ -128,7 +129,7 @@ describe('Toggle Selection', () => {
             }
           )
           ).toEqual({
-            list: sortedArray,
+            index: index,
             adjacentPivot: nextPivot,
             selected: nextSelection
           })

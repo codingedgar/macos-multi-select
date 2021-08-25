@@ -3,11 +3,11 @@ import { head, last } from 'ramda';
 import { Context, multiselect } from '../index';
 import { nonEmptySubsequentSubarray } from './arbitraries';
 
-describe('Select Next Item', () => {
-  test('Should do nothing if no items', () => {
+describe('Select Next Key', () => {
+  test('Should do nothing if no keys selected', () => {
     const initialContext: Context = {
       adjacentPivot: undefined,
-      list: [],
+      index: [],
       selected: []
     };
 
@@ -26,18 +26,18 @@ describe('Select Next Item', () => {
           fc.set(fc.string(), { minLength: 1 }),
           fc.boolean()
         ),
-        ([list, undefOrTop]) => {
+        ([index, undefOrTop]) => {
           expect(multiselect({
-            adjacentPivot: undefOrTop ? undefined : head(list),
-            list,
+            adjacentPivot: undefOrTop ? undefined : head(index),
+            index,
             selected: []
           }, {
             type: "SELECT NEXT",
           }))
             .toEqual({
-              list,
-              selected: [list[0]],
-              adjacentPivot: list[0],
+              index,
+              selected: [index[0]],
+              adjacentPivot: index[0],
             })
         }
       )
@@ -45,7 +45,7 @@ describe('Select Next Item', () => {
 
   });
 
-  test('Should never select beyond last item', () => {
+  test('Should never select beyond last key', () => {
     fc.assert(
       fc.property(
         fc.tuple(
@@ -54,10 +54,10 @@ describe('Select Next Item', () => {
             fc.string(), { minLength: 1 }
           )
         )
-        .chain(([extra, list]) =>
-          nonEmptySubsequentSubarray(list)
+        .chain(([extra, index]) =>
+          nonEmptySubsequentSubarray(index)
           .map(selected => ({
-            list,
+            index,
             selected,
             adjacentPivot: last(selected),
             extra
@@ -66,30 +66,30 @@ describe('Select Next Item', () => {
         ,
         ({
           adjacentPivot,
-          list,
+          index,
           selected,
           extra
         }) => {
 
           let prevContext: Context = {
             adjacentPivot,
-            list,
+            index,
             selected
           }
 
-          const startOn = list.indexOf(last(selected)!) + 1
+          const startOn = index.indexOf(last(selected)!) + 1
 
-          for (let index = startOn; index < list.length + extra; index++) {
+          for (let i = startOn; i < index.length + extra; i++) {
             
             const nextContext = multiselect(prevContext, {
               type: "SELECT NEXT",
             });
 
-            const selected = [index < list.length - 1 ? list[index]: last(list)];
+            const selected = [i < index.length - 1 ? index[i]: last(index)];
 
             expect(nextContext)
             .toEqual({
-              list,
+              index,
               selected,
               adjacentPivot: last(selected),
             })
@@ -112,24 +112,24 @@ describe('Select Next Item', () => {
             fc.string(), { minLength: 1 }
             )
         )
-        .chain(([undefOrTop, list]) =>
-          fc.nat(list.length - 1)
+        .chain(([undefOrTop, index]) =>
+          fc.nat(index.length - 1)
           .map(id => ({
-            list,
-            adjacentPivot: undefOrTop ? undefined : head(list),
-            id: list[id],
+            index,
+            adjacentPivot: undefOrTop ? undefined : head(index),
+            id: index[id],
           }))
         )
         ,
         ({
           adjacentPivot,
-          list,
+          index,
           id,
         }) => {
 
           const prevContext = multiselect(
             {
-              list,
+              index,
               adjacentPivot: adjacentPivot,
               selected: []
             },
@@ -139,12 +139,12 @@ describe('Select Next Item', () => {
             }
           )
 
-          const currentSelectionPivot = list.indexOf(id)
-          const nextSelection = currentSelectionPivot < list.length - 1
+          const currentSelectionPivot = index.indexOf(id)
+          const nextSelection = currentSelectionPivot < index.length - 1
             ? currentSelectionPivot + 1
-            : list.length - 1;
+            : index.length - 1;
 
-          const nextPivot = list[nextSelection];
+          const nextPivot = index[nextSelection];
 
           expect(
             multiselect(
@@ -155,7 +155,7 @@ describe('Select Next Item', () => {
             )
           )
           .toEqual({
-            list,
+            index,
             selected: [nextPivot],
             adjacentPivot: nextPivot,
           })
@@ -172,29 +172,29 @@ describe('Select Next Item', () => {
           fc.string(),
           { minLength: 2 }
         )
-        .chain(list =>
+        .chain(index =>
           fc.tuple(
-            fc.nat(list.length - 1),
-            fc.nat(list.length - 1),
+            fc.nat(index.length - 1),
+            fc.nat(index.length - 1),
           )
           .map(([first, second]) => ({
-            list,
+            index,
             adjacentPivot: undefined,
-            first: list[first],
-            second: list[second],
+            first: index[first],
+            second: index[second],
           }))
         )
         ,
         ({
           adjacentPivot,
-          list,
+          index,
           first,
           second
         }) => {
 
           const context1 = multiselect(
             {
-              list,
+              index,
               adjacentPivot: adjacentPivot,
               selected: []
             },
@@ -212,12 +212,12 @@ describe('Select Next Item', () => {
             }
           )
 
-          const currentSelectionPivot = list.indexOf(second)
-          const nextSelection = currentSelectionPivot < list.length - 1
+          const currentSelectionPivot = index.indexOf(second)
+          const nextSelection = currentSelectionPivot < index.length - 1
             ? currentSelectionPivot + 1
-            : list.length - 1;
+            : index.length - 1;
 
-          const nextPivot = list[nextSelection];
+          const nextPivot = index[nextSelection];
 
           expect(
             multiselect(
@@ -228,7 +228,7 @@ describe('Select Next Item', () => {
             )
           )
           .toEqual({
-            list,
+            index,
             selected: [nextPivot],
             adjacentPivot: nextPivot,
           })

@@ -1,8 +1,8 @@
-import { difference, head, last, take, union, without } from "ramda";
+import { head, last, take, union, without } from "ramda";
 import { findAdjacentToPivotInSortedArray, findNextPivot } from "./arrayUtils";
 
 export type Context = {
-  list: string[],
+  index: string[],
   selected: string[],
   adjacentPivot: string | undefined,
 }
@@ -15,15 +15,15 @@ export type Command =
   | { type: "SELECT NEXT" }
   | { type: "SELECT PREVIOUS" }
 
-function listIncludesAndIsNotEmpty(list: string[], item: string) {
-  return list.length > 0 && list.includes(item)
+function listIncludesAndIsNotEmpty(index: string[], key: string) {
+  return index.length > 0 && index.includes(key)
 }
 
 export function multiselect(context: Context, command: Command): Context {
 
   if (
     command.type === "SELECT ONE" &&
-    listIncludesAndIsNotEmpty(context.list, command.id)
+    listIncludesAndIsNotEmpty(context.index, command.id)
   ) {
     return {
       ...context,
@@ -32,23 +32,23 @@ export function multiselect(context: Context, command: Command): Context {
     };
   } else if (
       command.type === 'TOGGLE SELECTION' &&
-      listIncludesAndIsNotEmpty(context.list, command.id) &&
+      listIncludesAndIsNotEmpty(context.index, command.id) &&
       context.selected.includes(command.id) &&
       context.selected.length === 1
   ) {
     return {
       ...context,
       selected: [],
-      adjacentPivot: head(context.list),
+      adjacentPivot: head(context.index),
     };
   } else if (
       command.type === 'TOGGLE SELECTION' &&
-      listIncludesAndIsNotEmpty(context.list, command.id) &&
+      listIncludesAndIsNotEmpty(context.index, command.id) &&
       context.selected.includes(command.id)
   ) {
     const selected = context.selected.filter(x => x !== command.id);
     const adjacentPivot = findNextPivot(
-      context.list,
+      context.index,
       selected,
       command.id
     );
@@ -60,7 +60,7 @@ export function multiselect(context: Context, command: Command): Context {
     };
   } else if (
     command.type === 'TOGGLE SELECTION' &&
-    context.list.includes(command.id)
+    context.index.includes(command.id)
   ) {
     return {
       ...context,
@@ -71,41 +71,41 @@ export function multiselect(context: Context, command: Command): Context {
     return {
       ...context,
       selected: [],
-      adjacentPivot: head(context.list)!,
+      adjacentPivot: head(context.index)!,
     }
   } else if (
     command.type === "SELECT ADJACENT" &&
-    listIncludesAndIsNotEmpty(context.list, command.id) &&
+    listIncludesAndIsNotEmpty(context.index, command.id) &&
     context.selected.length === 0
   ) {
-    const n = context.list.indexOf(command.id) + 1;
+    const n = context.index.indexOf(command.id) + 1;
     return {
       ...context,
-      selected: take(n, context.list),
-      adjacentPivot: head(context.list),
+      selected: take(n, context.index),
+      adjacentPivot: head(context.index),
     }
   } else if (
     command.type === "SELECT ADJACENT" &&
-    listIncludesAndIsNotEmpty(context.list, command.id)  &&
+    listIncludesAndIsNotEmpty(context.index, command.id)  &&
     context.adjacentPivot !== undefined
   ) {
 
-    const pivotIndex = context.list.indexOf(context.adjacentPivot);
-    const selectionIndex = context.list.indexOf(command.id);
+    const pivotIndex = context.index.indexOf(context.adjacentPivot);
+    const selectionIndex = context.index.indexOf(command.id);
 
     const adjacentToStart = findAdjacentToPivotInSortedArray(
-      context.list,
+      context.index,
       context.selected,
       context.adjacentPivot
     );
     
     const adjacentToEnd = findAdjacentToPivotInSortedArray(
-      context.list,
+      context.index,
       context.selected,
       command.id,
     );
     
-    const nextSelection = context.list.slice(
+    const nextSelection = context.index.slice(
       Math.min(pivotIndex, selectionIndex),
       Math.max(pivotIndex, selectionIndex) + 1
     );
@@ -122,36 +122,36 @@ export function multiselect(context: Context, command: Command): Context {
     }
   } else if(
     command.type === "SELECT NEXT" &&
-    context.list.length &&
+    context.index.length &&
     context.selected.length === 0
   ) {
     return {
       ...context,
-      selected: [context.list[0]],
-      adjacentPivot: context.list[0],
+      selected: [context.index[0]],
+      adjacentPivot: context.index[0],
     }
   } else if (
     command.type === "SELECT NEXT" &&
-    context.list.length &&
+    context.index.length &&
     context.selected.length
   ) {
-    const pivotIndex = context.list.indexOf(last(context.selected)!)
+    const pivotIndex = context.index.indexOf(last(context.selected)!)
 
-    if (pivotIndex < context.list.length - 1) {
-      const nextItem = context.list[pivotIndex + 1];
+    if (pivotIndex < context.index.length - 1) {
+      const nextKey = context.index[pivotIndex + 1];
 
       return {
         ...context,
-        selected: [nextItem],
-        adjacentPivot: nextItem
+        selected: [nextKey],
+        adjacentPivot: nextKey
       }
     } else if (
       !(
         context.selected.length === 1 &&
-        context.selected[0] === last(context.list)
+        context.selected[0] === last(context.index)
       )
     ) {
-      const pivot = context.list[pivotIndex];
+      const pivot = context.index[pivotIndex];
       return {
         ...context,
         selected: [pivot],
@@ -162,10 +162,10 @@ export function multiselect(context: Context, command: Command): Context {
     }
   } else if (
     command.type === "SELECT PREVIOUS" &&
-    context.list.length &&
+    context.index.length &&
     context.selected.length === 0
   ) {
-    const pivot = last(context.list)!;
+    const pivot = last(context.index)!;
     return {
       ...context,
       selected: [pivot],
@@ -173,25 +173,25 @@ export function multiselect(context: Context, command: Command): Context {
     }
   } else if (
     command.type === "SELECT PREVIOUS" &&
-    context.list.length &&
+    context.index.length &&
     context.selected.length
   ) {
-    const pivotIndex = context.list.indexOf(last(context.selected)!)
+    const pivotIndex = context.index.indexOf(last(context.selected)!)
 
     if (pivotIndex > 0) {
-      const prevItem = context.list[pivotIndex - 1];
+      const prevKey = context.index[pivotIndex - 1];
       return {
         ...context,
-        selected: [prevItem],
-        adjacentPivot: prevItem
+        selected: [prevKey],
+        adjacentPivot: prevKey
       }
     } else if (
       !(
         context.selected.length === 1 &&
-        context.selected[0] === head(context.list)
+        context.selected[0] === head(context.index)
       )
     ) {
-      const pivot = head(context.list)!;
+      const pivot = head(context.index)!;
       return {
         ...context,
         selected: [pivot],
