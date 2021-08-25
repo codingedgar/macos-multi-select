@@ -11,8 +11,9 @@
         "watch-test": "jest --watch",
         "build": "rm -r dist && tsc",
         "prepare": "yarn build",
-        "build-demo": "parcel demo/index.html -d docs --port 3000 --hmr-port 3001",
-        "watch-demo": "parcel demo/index.html --open -d docs --port 3000 --hmr-port 3001"
+        "build-demo": "parcel build --public-url ./ -d docs demo/index.html",
+        "watch-demo": "parcel demo/index.html --open -d docs --port 3000 --hmr-port 3001",
+        "updatePath": "sed -i -- 's/files/.\\//g' dist/files/*.css"
     },
     "bugs": {
         "url": "https://github.com/davidkpiano/xstate/issues"
