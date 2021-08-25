@@ -1,55 +1,55 @@
 import { head } from "ramda";
 
 export function findNextPivot(
-  sortedArray: string[],
+  sortedIndex: string[],
   subarray: string[],
   previousPivot: string
 ): string {
-    const previousIndex = sortedArray.indexOf(previousPivot);
-    let nextIndex = previousIndex + 1;
+    const previous = sortedIndex.indexOf(previousPivot);
+    let next = previous + 1;
 
-    while (nextIndex <= sortedArray.length - 1) {
-      const nextItem = sortedArray[nextIndex];
-      if (subarray.includes(nextItem)){
-        return nextItem;
+    while (next <= sortedIndex.length - 1) {
+      const nextKey = sortedIndex[next];
+      if (subarray.includes(nextKey)){
+        return nextKey;
       };
-      nextIndex++;
+      next++;
     }
 
-    nextIndex = previousIndex - 1;
+    next = previous - 1;
     
-    while (nextIndex >= 0) {
-      const prevItem = sortedArray[nextIndex];
-      if (subarray.includes(prevItem)) {
-        return prevItem;
+    while (next >= 0) {
+      const prevKey = sortedIndex[next];
+      if (subarray.includes(prevKey)) {
+        return prevKey;
       }
-      nextIndex--;
+      next--;
     }
 
-  return head(sortedArray)!
+  return head(sortedIndex)!
 }
 
 export function findAdjacentToPivotInSortedArray(
-  sortedArray: string[],
+  sortedIndex: string[],
   subarray: string[],
-  item: string
+  key: string
 ): string[] {
-    const indexOfItem = sortedArray.indexOf(item);
-    let leftIndex = indexOfItem;
-    let rightIndex = indexOfItem;
+    const indexOfKey = sortedIndex.indexOf(key);
+    let leftIndex = indexOfKey;
+    let rightIndex = indexOfKey;
     let hasLeftAdjacent = leftIndex > 0;
-    let hasRightAdjacent = rightIndex < sortedArray.length - 1;
+    let hasRightAdjacent = rightIndex < sortedIndex.length - 1;
     while ((hasLeftAdjacent || hasRightAdjacent)) {
       if (leftIndex > 0) {
-        const nextLeft = sortedArray[leftIndex - 1];
+        const nextLeft = sortedIndex[leftIndex - 1];
         hasLeftAdjacent = subarray.includes(nextLeft);
         leftIndex = hasLeftAdjacent ? leftIndex - 1 : leftIndex;
       } else {
         hasLeftAdjacent = false
       }
       
-      if (rightIndex < sortedArray.length - 1) {
-        const nextRight = sortedArray[rightIndex + 1];
+      if (rightIndex < sortedIndex.length - 1) {
+        const nextRight = sortedIndex[rightIndex + 1];
         hasRightAdjacent = subarray.includes(nextRight);
         rightIndex = hasRightAdjacent ? rightIndex + 1 : rightIndex;
       } else {
@@ -57,5 +57,5 @@ export function findAdjacentToPivotInSortedArray(
       }
     }
 
-  return sortedArray.slice(leftIndex, rightIndex + 1);
+  return sortedIndex.slice(leftIndex, rightIndex + 1);
 }

@@ -13,7 +13,7 @@ export function nonEmptySubsequentSubarray(nonEmptyArray: string[]) {
   .map(([from, to]) => nonEmptyArray.slice(from, to));
 }
 
-export function list() {
+export function index() {
   return fc.set(fc.string())
 }
 
@@ -46,22 +46,22 @@ export function indexWithAdjacentConnections() {
       fc.nat(),
       fc.nat(),
     )
-    .map(([list, startStart, startEnd, endStart, endEnd, start, end]) =>
+    .map(([index, startStart, startEnd, endStart, endEnd, start, end]) =>
         [
-          list,
+          index,
           ...sort(ascending, [
-            startStart % list.length,
-            startEnd % list.length,
-            endStart % list.length,
-            endEnd % list.length,
+            startStart % index.length,
+            startEnd % index.length,
+            endStart % index.length,
+            endEnd % index.length,
           ]),
           start,
           end,
         ] as const
     )
-    .map(([list, startStart, startEnd, endStart, endEnd, start, end]) =>
+    .map(([index, startStart, startEnd, endStart, endEnd, start, end]) =>
         [
-          list,
+          index,
           startStart,
           startEnd,
           endStart,
@@ -70,16 +70,16 @@ export function indexWithAdjacentConnections() {
           (end % (endEnd - endStart + 1)) + endStart,
         ] as const
     )
-    .map(([list, startStart, startEnd, endStart, endEnd, start, end]) => ({
-        list,
-        adjacentGroup1: list.slice(startStart, start),
-        adjacentGroup2: list.slice(start + 1, startEnd),
+    .map(([index, startStart, startEnd, endStart, endEnd, start, end]) => ({
+        index,
+        adjacentGroup1: index.slice(startStart, start),
+        adjacentGroup2: index.slice(start + 1, startEnd),
         // if startEnd is the same as endStart
         // end can be a member of group3
-        adjacentGroup3: list.slice(endStart + ((startEnd === endStart) ? 1 : 0), end),
-        adjacentGroup4: list.slice(end + 1, endEnd),
-        end: list[end],
-        start: list[start],
+        adjacentGroup3: index.slice(endStart + ((startEnd === endStart) ? 1 : 0), end),
+        adjacentGroup4: index.slice(end + 1, endEnd),
+        end: index[end],
+        start: index[start],
       })
   )
 }

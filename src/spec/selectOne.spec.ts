@@ -2,8 +2,8 @@ import fc from 'fast-check';
 import { head } from 'ramda';
 import { multiselect } from '../index';
 
-describe('Select One Item', () => {
-  test('should be able to select one item in a non empty list', () => {
+describe('Select One Key', () => {
+  test('should be able to select one key in a non empty index', () => {
 
     fc.assert(
       fc.property(
@@ -11,22 +11,23 @@ describe('Select One Item', () => {
           fc.string(),
           { minLength: 1 }
         )
-        .chain(list =>
+        .chain(index =>
           fc.record({
-            list: fc.constant(list),
-            id: fc.integer(0, list.length-1)
-              .map(index => list[index]),
+            index: fc.constant(index),
+            id: fc
+              .integer(0, index.length-1)
+              .map(i => index[i]),
           })  
         ),
           ({
-            list,
+            index,
             id,
           }) => {
             expect(
               multiselect({
-                  list,
+                  index,
                   selected: [],
-                  adjacentPivot: head(list)!,
+                  adjacentPivot: head(index)!,
                 },
                 {
                   type: "SELECT ONE",
@@ -35,7 +36,7 @@ describe('Select One Item', () => {
               )
             )
               .toEqual({
-                list,
+                index,
                 selected: [id],
                 adjacentPivot: id,
               })
@@ -52,24 +53,26 @@ describe('Select One Item', () => {
           fc.string(),
           { minLength: 2 }
         )
-        .chain(list =>
+        .chain(index =>
           fc.record({
-            list: fc.constant(list),
-            selectedId: fc.integer(0, list.length-1)
-              .map(index => list[index]),
-            id: fc.integer(0, list.length-1)
-              .map(index => list[index]),
+            index: fc.constant(index),
+            selectedId: fc
+              .integer(0, index.length-1)
+              .map(i => index[i]),
+            id: fc
+              .integer(0, index.length-1)
+              .map(i => index[i]),
           })  
         .filter(context => context.selectedId !== context.id)
         ),
           ({
-            list,
+            index,
             selectedId,
             id,
           }) => {
             expect(
               multiselect({
-                  list,
+                  index,
                   selected: [selectedId],
                   adjacentPivot: selectedId,
                 },
@@ -80,7 +83,7 @@ describe('Select One Item', () => {
               )
             )
               .toEqual({
-                list,
+                index,
                 selected: [id],
                 adjacentPivot: id,
               })

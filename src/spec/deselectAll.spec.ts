@@ -8,29 +8,30 @@ describe('Deselect All', () => {
     fc.assert(
       fc.property(
         fc.set(
-          fc.string()
+          fc.string(),
+          { minLength: 1 }
         )
-        .filter(list => list.length > 0)
-        .chain(list =>
+        .chain(index =>
           fc.record({
-            list: fc.constant(list),
+            index: fc.constant(index),
             selected: fc.set(
-              fc.integer(0, list.length-1)
-              .map(index => list[index]),
+              fc
+                .integer(0, index.length - 1)
+                .map(i => index[i]),
             ),
           })  
         ),
         ({
-          list,
+          index,
           selected
         }) => {
 
           expect(
             multiselect(
               {
-                list,
+                index,
                 selected,
-                adjacentPivot: (selected.length) ? selected[selected.length - 1] : head(list)!,
+                adjacentPivot: (selected.length) ? selected[selected.length - 1] : head(index)!,
               },
               {
                 type: "DESELECT ALL",
@@ -38,9 +39,9 @@ describe('Deselect All', () => {
             )
           )
           .toEqual({
-            list,
+            index,
             selected: [],
-            adjacentPivot: head(list),
+            adjacentPivot: head(index),
           })
         }
       )

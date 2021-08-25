@@ -1,10 +1,10 @@
-import fc, { array } from 'fast-check';
+import fc from 'fast-check';
 import { take, last, head, reverse } from "ramda";
 import { Context, multiselect } from '../index';
 import { indexWithAdjacentConnections, takeFromTo } from './arbitraries';
 
 describe('Select Adjacent', () => {
-  test('Should select from top to bottom in an empty list', () => {
+  test('Should select from top to bottom in an empty index', () => {
 
     fc.assert(
       fc.property(
@@ -12,23 +12,23 @@ describe('Select Adjacent', () => {
           fc.string(),
           { minLength: 1 }
         )
-        .chain(list =>
+        .chain(index =>
           fc.record({
-            list: fc.constant(list),
-            selection: fc.integer(1, list.length)
-              .map(n => take(n, list))
+            index: fc.constant(index),
+            selection: fc.integer(1, index.length)
+              .map(n => take(n, index))
           })
         ),
         ({
-          list,
+          index,
           selection,
         }) => {
           const id = last(selection)!;
           expect(
             multiselect({
-                list,
+                index,
                 selected: [],
-                adjacentPivot: head(list)!,
+                adjacentPivot: head(index)!,
               },
               {
                 type: "SELECT ADJACENT",
@@ -37,7 +37,7 @@ describe('Select Adjacent', () => {
             )
           )
           .toEqual({
-            list,
+            index,
             selected: expect.arrayContaining(selection),
             adjacentPivot: head(selection)!,
           })
@@ -54,16 +54,16 @@ describe('Select Adjacent', () => {
           fc.string(),
           { minLength: 1 }
         )
-        .chain(list =>
+        .chain(index =>
           fc.record({
-            list: fc.constant(list),
+            index: fc.constant(index),
             selection: fc
-              .integer(0, list.length - 1)
+              .integer(0, index.length - 1)
               .chain(start =>
                 fc
-                  .integer(start + 1, list.length)
+                  .integer(start + 1, index.length)
                   .map(end =>
-                    list.slice(start, end)
+                    index.slice(start, end)
                   )
               ),
             direction: fc.boolean(),
@@ -71,18 +71,18 @@ describe('Select Adjacent', () => {
         )
         .map(
           ({
-            list,
+            index,
             selection,
             direction
           }) => ({
-            list,
+            index,
             selection,
             start: direction ? head(selection)! : last(selection)!,
             end: direction ? last(selection)! : head(selection)!
           })
         ),
         ({
-          list,
+          index,
           selection,
           start,
           end
@@ -90,9 +90,9 @@ describe('Select Adjacent', () => {
           expect(
             multiselect(
               multiselect({
-                list,
+                index,
                 selected: [],
-                adjacentPivot: head(list)!,
+                adjacentPivot: head(index)!,
               },
               {
                 type: "SELECT ONE",
@@ -106,7 +106,7 @@ describe('Select Adjacent', () => {
             )
           )
           .toEqual({
-            list,
+            index,
             selected: expect.arrayContaining(selection),
             adjacentPivot: start,
           })
@@ -125,32 +125,32 @@ describe('Select Adjacent', () => {
           ),
           fc.boolean()
         )
-        .chain(([list, direction]) =>
+        .chain(([index, direction]) =>
           fc
-            .integer(1, list.length - 2)
+            .integer(1, index.length - 2)
             .chain(start =>
               fc
-                .integer(start, list.length - 2)
+                .integer(start, index.length - 2)
                 .chain(end =>
                   fc
                     .integer(
                       direction ? 0 : end + 1,
-                      direction ? start - 1 : list.length - 1
+                      direction ? start - 1 : index.length - 1
                     )
                     .chain(id =>
                       fc
                         .shuffledSubarray(
-                          list.slice(
+                          index.slice(
                             direction ? end + 2 : 0,
-                            direction ? list.length : start - 1
+                            direction ? index.length : start - 1
                           )
                         )
                     .map((otherSelection) => ({
-                      list,
-                      selected: list.slice(start, end + 1).concat(otherSelection),
-                      adjacentPivot: list[direction ? start : end],
-                      id: list[id],
-                      nextSelection: otherSelection.concat(list.slice(
+                      index,
+                      selected: index.slice(start, end + 1).concat(otherSelection),
+                      adjacentPivot: index[direction ? start : end],
+                      id: index[id],
+                      nextSelection: otherSelection.concat(index.slice(
                         direction ? id : end,
                         (direction ? start : id) + 1
                         ))
@@ -162,7 +162,7 @@ describe('Select Adjacent', () => {
         ,
         ({
           id,
-          list,
+          index,
           adjacentPivot,
           selected,
           nextSelection,
@@ -171,7 +171,7 @@ describe('Select Adjacent', () => {
           expect(
             multiselect(
               {
-                list,
+                index,
                 adjacentPivot,
                 selected
               },
@@ -181,7 +181,7 @@ describe('Select Adjacent', () => {
               }
             )
           ).toEqual({
-            list,
+            index,
             selected: expect.arrayContaining(nextSelection),
             adjacentPivot
           })
@@ -196,7 +196,7 @@ describe('Select Adjacent', () => {
         indexWithAdjacentConnections()
         ,
         ({
-          list,
+          index,
           adjacentGroup1,
           adjacentGroup2,
           adjacentGroup3,
@@ -205,11 +205,11 @@ describe('Select Adjacent', () => {
           end,
         }) => {
 
-          const expectedSelection = takeFromTo(list, start, end);
+          const expectedSelection = takeFromTo(index, start, end);
 
           let context: Context = {
             adjacentPivot: undefined,
-            list,
+            index,
             selected: []
           }
 
@@ -238,7 +238,7 @@ describe('Select Adjacent', () => {
             }
           )
           expect(result).toEqual({
-            list,
+            index,
             adjacentPivot: start,
             selected: expectedSelection,
           })
@@ -253,7 +253,7 @@ describe('Select Adjacent', () => {
         indexWithAdjacentConnections()
         ,
         ({
-          list,
+          index,
           adjacentGroup1,
           adjacentGroup2,
           adjacentGroup3,
@@ -262,11 +262,11 @@ describe('Select Adjacent', () => {
           end,
         }) => {
 
-          const expectedSelection = reverse(takeFromTo(list, start, end));
+          const expectedSelection = reverse(takeFromTo(index, start, end));
 
           let context: Context = {
             adjacentPivot: undefined,
-            list,
+            index,
             selected: []
           }
 
@@ -295,7 +295,7 @@ describe('Select Adjacent', () => {
             }
           )
           expect(result).toEqual({
-            list,
+            index,
             adjacentPivot: end,
             selected: expectedSelection,
           })

@@ -36,7 +36,7 @@
 # Toggle Key Selection
 
 ## Scenarios
-### Should be able to add and remove a selection one item in a non empty index
+### Should be able to add and remove a selection one key in a non empty index
 
 |  |  |
 | --- | ---|
@@ -133,7 +133,7 @@
 
 # Select Next
 # Scenarios
-### Should do nothing if no items
+### Should do nothing if no keys
 |  |  |
 | --- | ---|
 | Implemented | ✅ |
@@ -151,7 +151,7 @@
 
 ![demo](./images/select_next_key_scenario_2.gif)
 
-### Should never select beyond last item
+### Should never select beyond last key
 
 |  |  |
 | --- | ---|
@@ -202,7 +202,7 @@
 | Hot Key | `Arrow Up` |
 
 ![demo](./images/select_previous_key_scenario_2.gif)
-### Should never select beyond first item
+### Should never select beyond first key
 
 |  |  |
 | --- | ---|
