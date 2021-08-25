@@ -14,7 +14,7 @@
 <a name="select-one-key"></a>
 # Select One Key
 
-## Scenarios
+## Properties
 ### Should be able to select one key in a non empty list
 
 |  |  |
@@ -50,7 +50,7 @@
 <a name="toggle-key-selection"></a>
 # Toggle Key Selection
 
-## Scenarios
+## Properties
 ### Should be able to add and remove a selection one key in a non empty index
 
 |  |  |
@@ -65,7 +65,7 @@
 <a name="select-adjacent-keys"></a>
 # Select Adjacent Keys
 
-## Scenarios
+## Properties
 ### Should select from top to bottom in an empty list
 |  |  |
 | --- | ---|
@@ -137,7 +137,7 @@
 <a name="deselect-all"></a>
 # Deselect All
 
-## Scenarios
+## Properties
 ### Deselect All
 |  |  |
 | --- | ---|
@@ -150,7 +150,7 @@
 <a name="select-next-key"></a>
 
 # Select Next Key
-### Scenarios
+## Properties
 ### Should do nothing if no keys
 |  |  |
 | --- | ---|
@@ -202,7 +202,7 @@
 
 <a name="select-previous-key"></a>
 # Select Previous Key
-## Scenarios
+## Properties
 ### Should do nothing if the list is empty
 
 |  |  |
@@ -252,18 +252,62 @@
 
 <a name="select-next-adjacent-key"></a>
 # Select Next Adjacent Key
-### Scenarios
-## Should start from top
-## `Adjacent range` union
+## Properties
+### In the initial state the user starts from the top
+|  |  |
+| --- | ---|
+| Implemented | ❌ |
+| Has tests | ❌ |
+![demo](./images/select_next_adjacent_key_scenario_1.gif)
+
+### When the last selected group is ascending then it selects the next key
+|  |  |
+| --- | ---|
+| Implemented | ❌ |
+| Has tests | ❌ |
+| Hot Key | `Shift ⇧ + Arrow Down` |
+
+![demo](./images/select_next_adjacent_key_scenario_2.gif)
+![demo](./images/select_next_adjacent_key_scenario_2_1.gif)
+
+### When the selected group is ascending then it deselects the next key
+|  |  |
+| --- | ---|
+| Implemented | ❌ |
+| Has tests | ❌ |
+| Hot Key | `Shift ⇧ + Arrow Down` |
+
+![demo](./images/select_next_adjacent_key_scenario_3.gif)
+
+### Ignores the adjacent pivot key (adjacent pivot is always selected)
+
+|  |  |
+| --- | ---|
+| Implemented | ❌ |
+| Has tests | ❌ |
+| Hot Key | `Shift ⇧ + Arrow Down` |
+
+![demo](./images/select_next_adjacent_key_scenario_4.gif)
+
+### Adjacent group union
+If the next element to select has an adjacent group of selected keys, it does an union of that group, and orders it as if it were selected with a `Select Next Adjacent Key` command (sequentially instead of the original order of selection).
+
+|  |  |
+| --- | ---|
+| Implemented | ❌ |
+| Has tests | ❌ |
+| Hot Key | `Shift ⇧ + Arrow Down` |
+
+![demo](./images/select_next_adjacent_key_scenario_5.gif)
 
 <a name="select-previous-adjacent-key"></a>
 # Select Previous Adjacent Key
-### Scenarios
+## Properties
 ## Should start from bottom
-## `Adjacent range` union
+## `Adjacent group` union
 <a name="changes-in-index"></a>
 # Changes in Index
-## Scenarios
+## Properties
 ### Key added to the index in `Adjacent Range`
 ### Key added outside of `Adjacent Range`
 ### Non-selected Key removed from the index
