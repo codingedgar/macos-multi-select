@@ -1,3 +1,17 @@
+
+# Table of content
+- [Select One Key](#select-one-key)
+- [Toggle Key Selection](#toggle-key-selection)
+- [Select Adjacent Keys](#select-adjacent-keys)
+- [Deselect All](#deselect-all)
+- [Select Next Key](#select-next-key)
+- [Select Previous Key](#select-previous-key)
+- [Select Next Adjacent Key](#select-next-adjacent-key)
+- [Select Previous Adjacent Key](#select-previous-adjacent-key)
+- [Changes in Index](#changes-in-index)
+
+
+<a name="select-one-key"></a>
 # Select One Key
 
 ## Scenarios
@@ -33,6 +47,7 @@
 
 ![demo](./images/select_one_key_scenario_3.gif)
 
+<a name="toggle-key-selection"></a>
 # Toggle Key Selection
 
 ## Scenarios
@@ -47,6 +62,7 @@
 
 ![demo](./images/toggle_key_selection_scenario_1.gif)
 
+<a name="select-adjacent-keys"></a>
 # Select Adjacent Keys
 
 ## Scenarios
@@ -118,8 +134,8 @@
 ![demo](./images/select_adjacent_keys_scenario_6.gif)
 ![demo](./images/select_adjacent_keys_scenario_7.gif)
 
-
-# Deselect all
+<a name="deselect-all"></a>
+# Deselect All
 
 ## Scenarios
 ### Deselect All
@@ -131,8 +147,10 @@
 
 ![demo](./images/deselect_all_scenario_1.gif)
 
-# Select Next
-# Scenarios
+<a name="select-next-key"></a>
+
+# Select Next Key
+### Scenarios
 ### Should do nothing if no keys
 |  |  |
 | --- | ---|
@@ -182,6 +200,7 @@
 
 ![demo](./images/select_next_key_scenario_6.gif)
 
+<a name="select-previous-key"></a>
 # Select Previous Key
 ## Scenarios
 ### Should do nothing if the list is empty
@@ -231,15 +250,18 @@
 
 ![demo](./images/select_previous_key_scenario_6.gif)
 
+<a name="select-next-adjacent-key"></a>
 # Select Next Adjacent Key
 ### Scenarios
 ## Should start from top
 ## `Adjacent range` union
+
+<a name="select-previous-adjacent-key"></a>
 # Select Previous Adjacent Key
 ### Scenarios
 ## Should start from bottom
 ## `Adjacent range` union
-
+<a name="changes-in-index"></a>
 # Changes in Index
 ## Scenarios
 ### Key added to the index in `Adjacent Range`
