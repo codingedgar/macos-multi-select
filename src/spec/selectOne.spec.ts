@@ -1,6 +1,7 @@
 import fc from 'fast-check';
 import { head } from 'ramda';
-import { multiselect } from '../index';
+import { Context, multiselect } from '../index';
+import { indexWithSelection } from './arbitraries';
 
 describe('Select One Key', () => {
   test('should be able to select one key in a non empty index', () => {
@@ -89,6 +90,50 @@ describe('Select One Key', () => {
               })
           }
         )
+    )
+  });
+
+  test('Should deselect all but the selected key', () => {
+    fc.assert(
+      fc.property(
+        indexWithSelection(),
+        ({
+          index,
+          selected,
+          selectOne,
+        }) => {
+          const context: Context = selected.reduce(
+            (ctx, key) => 
+              multiselect(
+                ctx,
+                {
+                  type: "TOGGLE SELECTION",
+                  id: key,
+                }
+              ),
+              {
+                index,
+                selected: [],
+                adjacentPivot: undefined,
+              } as Context
+          );
+
+          expect(
+            multiselect(
+              context,
+              {
+                type: "SELECT ONE",
+                id: selectOne,
+              }
+            )
+          )
+            .toEqual({
+              index,
+              selected: [selectOne],
+              adjacentPivot: selectOne,
+            })
+        }
+      )
     )
   });
 })

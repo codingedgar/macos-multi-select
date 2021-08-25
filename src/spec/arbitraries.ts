@@ -1,5 +1,5 @@
 import fc from 'fast-check';
-import { sort } from 'ramda';
+import { sort, uniq } from 'ramda';
 
 export function subsequentSubarray(arr: string[]) {
   return fc.tuple(fc.nat(arr.length), fc.nat(arr.length))
@@ -82,4 +82,25 @@ export function indexWithAdjacentConnections() {
         start: index[start],
       })
   )
+}
+
+export function indexWithSelection() {
+  return fc.tuple(
+    fc.set(
+      fc.string(),
+      { minLength: 1 }
+    ),
+    fc.array(fc.nat(), { minLength: 1 }),
+    fc.nat()
+  )
+  .map(([index, selectedIndices, selectOneIndex]) => {
+    const selected = uniq(selectedIndices.map(i => index[i % index.length]));
+    const selectOne = selected[selectOneIndex % selected.length];
+
+    return {
+      index,
+      selected,
+      selectOne
+    }
+  })
 }

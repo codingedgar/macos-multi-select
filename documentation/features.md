@@ -23,11 +23,11 @@
 
 ![demo](./images/select_one_key_scenario_2.gif)
 
-### Should do nothing if selecting an already selected key
+### Should deselect all but the selected key
 |  |  |
 | --- | ---|
-| Implemented | ❌ |
-| Has tests | ❌ |
+| Implemented | ✅ |
+| Has tests | ✅ |
 | Hot Key | `click` |
 | Issue | https://github.com/codingedgar/macos-multi-select/issues/26 |
 
