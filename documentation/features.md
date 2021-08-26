@@ -99,8 +99,8 @@
 
 |  |  |
 | --- | ---|
-| Implemented | ❌ |
-| Has tests | ❌ |
+| Implemented | ✅ |
+| Has tests | ✅ |
 | Hot Key | `⇧ + click` |
 | Issue | https://github.com/codingedgar/macos-multi-select/issues/17 |
 ![demo](./images/select_adjacent_keys_scenario_8.gif)
