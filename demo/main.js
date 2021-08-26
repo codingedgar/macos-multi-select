@@ -1,6 +1,5 @@
-
 import { multiselect, Context } from '../dist/index'
-// console.log(index)
+
 let context = {
   index: [],
   selected: [],
@@ -36,12 +35,15 @@ window.onkeydown = (e => {
   if (e.key === "Shift") {
     shiftPressed = true
   }
-  if(e.key === "ArrowDown") {
+  if (shiftPressed && e.key === "ArrowDown") {
+    update({
+      type: "SELECT NEXT ADJACENT"
+    });
+  } else if (e.key === "ArrowDown") {
     update({
       type: "SELECT NEXT"
     });
-  }
-  if(e.key === "ArrowUp") {
+  } else if (e.key === "ArrowUp") {
     update({
       type: "SELECT PREVIOUS"
     });
@@ -62,7 +64,6 @@ for (let index = 0; index < 10; index++) {
   var item = document.createElement("li");
   item.id = index;
   item.onclick = (e) => {
-    console.log(controlPressed, shiftPressed)
     if (controlPressed) {
       update({
         type: "TOGGLE SELECTION",

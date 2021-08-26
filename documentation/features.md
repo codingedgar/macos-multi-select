@@ -256,15 +256,15 @@
 ### In the initial state the user starts from the top
 |  |  |
 | --- | ---|
-| Implemented | ❌ |
-| Has tests | ❌ |
+| Implemented | ✅ |
+| Has tests | ✅ |
 ![demo](./images/select_next_adjacent_key_scenario_1.gif)
 
 ### When the last selected group is ascending then it selects the next key
 |  |  |
 | --- | ---|
-| Implemented | ❌ |
-| Has tests | ❌ |
+| Implemented | ✅ |
+| Has tests | ✅ |
 | Hot Key | `Shift ⇧ + Arrow Down` |
 
 ![demo](./images/select_next_adjacent_key_scenario_2.gif)

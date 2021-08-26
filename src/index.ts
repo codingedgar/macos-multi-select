@@ -1,5 +1,5 @@
 import { head, last, take, union, without } from "ramda";
-import { findAdjacentToPivotInSortedArray, findNextPivot } from "./arrayUtils";
+import { findAdjacentToKeyInIndex, findNextPivot } from "./arrayUtils";
 
 export type Context = {
   index: string[],
@@ -14,6 +14,7 @@ export type Command =
   | { type: "SELECT ADJACENT", id: string }
   | { type: "SELECT NEXT" }
   | { type: "SELECT PREVIOUS" }
+  | { type: "SELECT NEXT ADJACENT" }
 
 function listIncludesAndIsNotEmpty(index: string[], key: string) {
   return index.length > 0 && index.includes(key)
@@ -93,13 +94,13 @@ export function multiselect(context: Context, command: Command): Context {
     const pivotIndex = context.index.indexOf(context.adjacentPivot);
     const selectionIndex = context.index.indexOf(command.id);
 
-    const adjacentToStart = findAdjacentToPivotInSortedArray(
+    const adjacentToStart = findAdjacentToKeyInIndex(
       context.index,
       context.selected,
       context.adjacentPivot
     );
     
-    const adjacentToEnd = findAdjacentToPivotInSortedArray(
+    const adjacentToEnd = findAdjacentToKeyInIndex(
       context.index,
       context.selected,
       command.id,
@@ -199,6 +200,28 @@ export function multiselect(context: Context, command: Command): Context {
       }
     } else {
       return context;
+    }
+  } else if (
+    command.type === "SELECT NEXT ADJACENT" &&
+    context.index.length > 0 &&
+    context.selected.length === 0
+  ) {
+    const pivot =  head(context.index)!;
+    return {
+      ...context,
+      selected: [pivot],
+      adjacentPivot: pivot
+    }
+  } else if (
+    command.type === "SELECT NEXT ADJACENT" &&
+    context.index.length > 0
+  ) {
+    const lastSelected = last(context.selected)!;
+    const lastSelectedIndex = context.index.indexOf(lastSelected);
+
+    return {
+      ...context,
+      selected: context.selected.concat([context.index[lastSelectedIndex + 1]])
     }
   } else {
     return context;

@@ -1,5 +1,5 @@
 import fc from 'fast-check';
-import { sort, uniq } from 'ramda';
+import { sort, uniq, head, tail, init, last } from 'ramda';
 
 export function subsequentSubarray(arr: string[]) {
   return fc.tuple(fc.nat(arr.length), fc.nat(arr.length))
@@ -103,4 +103,29 @@ export function indexWithSelection() {
       selectOne
     }
   })
+}
+
+export function indexWithOneAdjacentAscendingSelection() {
+  return fc
+    .tuple(
+      fc.set(fc.string(), { minLength: 2 }),
+      fc.nat(),
+      fc.nat(),
+    )
+    .map(([index, n1, n2]) => {
+      
+      
+      const n1InRange = n1 % index.length;
+      const n2InRange = n2 % index.length;
+
+      const start = Math.min(n1InRange, n2InRange) - 1;
+      const end = Math.max(n1InRange, n2InRange) + 1;
+      const subArray =  index.slice(start, end);
+
+      return {
+        index,
+        subArray,
+      }
+    });
+
 }
