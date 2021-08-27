@@ -67,7 +67,7 @@ export function groupIsAscending(group: string[], index: string[]): boolean {
     const ultimate = group[group.length - 1];
     const penultimate = group[group.length - 2];
 
-    return index.indexOf(ultimate) < index.indexOf(penultimate)
+    return index.indexOf(ultimate) > index.indexOf(penultimate)
   }
 }
 

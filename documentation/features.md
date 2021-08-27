@@ -273,8 +273,8 @@
 ### When the selected group is ascending then it deselects the next key
 |  |  |
 | --- | ---|
-| Implemented | ❌ |
-| Has tests | ❌ |
+| Implemented | ✅ |
+| Has tests | ✅ |
 | Hot Key | `Shift ⇧ + Arrow Down` |
 
 ![demo](./images/select_next_adjacent_key_scenario_3.gif)

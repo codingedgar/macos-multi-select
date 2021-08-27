@@ -1,5 +1,5 @@
-import { head, last, take, union, without } from "ramda";
-import { findAdjacentToKeyInIndex, findNextPivot } from "./arrayUtils";
+import { head, init, last, take, union, without } from "ramda";
+import { findAdjacentToKeyInIndex, findNextPivot, groupIsAscending } from "./arrayUtils";
 
 export type Context = {
   index: string[],
@@ -214,6 +214,31 @@ export function multiselect(context: Context, command: Command): Context {
     }
   } else if (
     command.type === "SELECT NEXT ADJACENT" &&
+    context.index.length > 0 &&
+    context.selected.length > 1
+  ) {
+    const lastSelected = last(context.selected)!;
+    const lastSelectedIndex = context.index.indexOf(lastSelected);
+
+    const adjacent = findAdjacentToKeyInIndex(
+      context.index,
+      context.selected,
+      lastSelected,
+    );
+
+    const minus = context.selected.filter(x => adjacent.includes(x));
+
+    const isAscending = groupIsAscending(minus, context.index);
+
+    return {
+      ...context,
+      selected: isAscending
+        ? context.selected
+            .concat([context.index[lastSelectedIndex + 1]])
+        : init(context.selected)
+    }
+  } else if (
+    command.type === "SELECT NEXT ADJACENT" &&
     context.index.length > 0
   ) {
     const lastSelected = last(context.selected)!;
@@ -221,7 +246,8 @@ export function multiselect(context: Context, command: Command): Context {
 
     return {
       ...context,
-      selected: context.selected.concat([context.index[lastSelectedIndex + 1]])
+      selected: context.selected
+        .concat([context.index[lastSelectedIndex + 1]])
     }
   } else {
     return context;
