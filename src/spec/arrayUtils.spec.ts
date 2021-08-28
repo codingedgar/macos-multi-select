@@ -1,6 +1,6 @@
 import fc from 'fast-check';
 import { head } from 'ramda';
-import { findAdjacentToPivotInSortedArray, findNextPivot } from "../arrayUtils";
+import { findAdjacentToKeyInIndex, findNextPivot } from "../arrayUtils";
 
 describe('find adjacent to pivot', () => {
   test('should find adjacent elements', () => {
@@ -63,7 +63,7 @@ describe('find adjacent to pivot', () => {
           adjacent
         }) => {
           expect(
-            findAdjacentToPivotInSortedArray(
+            findAdjacentToKeyInIndex(
               sortedArray,
               subarray,
               pivot

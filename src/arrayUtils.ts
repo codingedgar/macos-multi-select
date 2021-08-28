@@ -1,4 +1,4 @@
-import { head } from "ramda";
+import { head, init, last, tail } from "ramda";
 
 export function findNextPivot(
   sortedIndex: string[],
@@ -29,7 +29,7 @@ export function findNextPivot(
   return head(sortedIndex)!
 }
 
-export function findAdjacentToPivotInSortedArray(
+export function findAdjacentToKeyInIndex(
   sortedIndex: string[],
   subarray: string[],
   key: string
@@ -58,4 +58,26 @@ export function findAdjacentToPivotInSortedArray(
     }
 
   return sortedIndex.slice(leftIndex, rightIndex + 1);
+}
+
+export function groupAdjacentIsDescending(group: string[], index: string[]): boolean {
+  const ultimate = group[group.length - 1];
+  const penultimate = group[group.length - 2];
+
+  return index.indexOf(ultimate) === index.indexOf(penultimate) - 1
+}
+
+export function groupAdjacentIsAscending(group: string[], index: string[]): boolean {
+  const ultimate = group[group.length - 1];
+  const penultimate = group[group.length - 2];
+
+  return index.indexOf(ultimate) === index.indexOf(penultimate) + 1
+}
+
+export function partitionHeadAndTail<T>(nonEmptyArray: T[]): [T, T[]] {
+  return [head(nonEmptyArray)!, tail(nonEmptyArray)];
+}
+
+export function partitionInitAndLast<T>(nonEmptyArray: T[]): [T[], T] {
+  return [init(nonEmptyArray), last(nonEmptyArray)!];
 }
