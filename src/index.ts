@@ -16,6 +16,7 @@ export type Command =
   | { type: "SELECT PREVIOUS" }
   | { type: "SELECT NEXT ADJACENT" }
   | { type: "SELECT PREVIOUS ADJACENT" }
+  | { type: "SELECT ALL" }
 
 function listIncludesAndIsNotEmpty(index: string[], key: string) {
   return index.length > 0 && index.includes(key)
@@ -287,6 +288,15 @@ export function multiselect(context: Context, command: Command): Context {
       ...context,
       selected: context.selected
         .concat([context.index[lastSelectedIndex - 1]])
+    }
+  } else if (
+    command.type === "SELECT ALL" &&
+    context.index.length > 0
+  ) {
+    return {
+      index: context.index,
+      selected: context.index,
+      adjacentPivot: last(context.index)
     }
   } else {
     return context;

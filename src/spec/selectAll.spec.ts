@@ -1,24 +1,18 @@
 import fc from 'fast-check';
-import { head } from 'ramda';
+import { head, last } from 'ramda';
 import { multiselect } from '../index';
+import { index, nonEmptyIndex } from './arbitraries';
 
-describe('Deselect All', () => {
-  test('should deselect all', () => {
+describe('Select All', () => {
+  test('should select all', () => {
 
     fc.assert(
       fc.property(
-        fc.set(
-          fc.string(),
-          { minLength: 1 }
-        )
+        nonEmptyIndex()
         .chain(index =>
           fc.record({
             index: fc.constant(index),
-            selected: fc.set(
-              fc
-                .integer(0, index.length - 1)
-                .map(i => index[i]),
-            ),
+            selected: fc.shuffledSubarray(index)
           })  
         ),
         ({
@@ -31,17 +25,17 @@ describe('Deselect All', () => {
               {
                 index,
                 selected,
-                adjacentPivot: (selected.length) ? selected[selected.length - 1] : head(index)!,
+                adjacentPivot: (selected.length) ? last(selected)! : head(index)!,
               },
               {
-                type: "DESELECT ALL",
+                type: "SELECT ALL",
               }
             )
           )
           .toEqual({
             index,
-            selected: [],
-            adjacentPivot: head(index),
+            selected: index,
+            adjacentPivot: last(index),
           })
         }
       )
