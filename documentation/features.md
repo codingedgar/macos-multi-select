@@ -253,7 +253,7 @@
 <a name="select-next-adjacent-key"></a>
 # Select Next Adjacent Key
 ## Properties
-### In the initial state the user starts from the top
+### In the initial state the user starts from the bottom
 |  |  |
 | --- | ---|
 | Implemented | ✅ |
@@ -314,7 +314,66 @@ Does nothing if the last item is already selected
 <a name="select-previous-adjacent-key"></a>
 # Select Previous Adjacent Key
 ## Properties
-## Should start from bottom
+### In the initial state the user starts from the top
+
+|  |  |
+| --- | ---|
+| Implemented | ✅ |
+| Has tests | ✅ |
+| Hot Key | `Shift ⇧ + Arrow Up` |
+
+![demo](./images/select_previous_adjacent_key_scenario_1.gif)
+
+### When the last selected group is descending then it selects the previous key
+|  |  |
+| --- | ---|
+| Implemented | ✅ |
+| Has tests | ✅ |
+| Hot Key | `Shift ⇧ + Arrow Up` |
+
+![demo](./images/select_previous_adjacent_key_scenario_2.gif)
+![demo](./images/select_previous_adjacent_key_scenario_2_1.gif)
+
+### When the selected group is ascending then it deselects the previous key
+|  |  |
+| --- | ---|
+| Implemented | ✅ |
+| Has tests | ✅ |
+| Hot Key | `Shift ⇧ + Arrow Up` |
+
+![demo](./images/select_previous_adjacent_key_scenario_3.gif)
+
+### Ignores the adjacent pivot key (adjacent pivot is always selected)
+
+|  |  |
+| --- | ---|
+| Implemented | ✅ |
+| Has tests | ✅ |
+| Hot Key | `Shift ⇧ + Arrow Up` |
+
+![demo](./images/select_previous_adjacent_key_scenario_4.gif)
+
+### Adjacent group union
+If the previous element to select has an adjacent group of selected keys, it does an union of that group, and orders it as if it were selected with a `Select Next Adjacent Key` command (sequentially instead of the original order of selection).
+
+|  |  |
+| --- | ---|
+| Implemented | ✅ |
+| Has tests | ✅ |
+| Hot Key | `Shift ⇧ + Arrow Up` |
+
+![demo](./images/select_previous_adjacent_key_scenario_5.gif)
+
+### Limit last index
+Does nothing if the last item is already selected
+
+|  |  |
+| --- | ---|
+| Implemented | ✅ |
+| Has tests | ✅ |
+| Hot Key | `Shift ⇧ + Arrow Up` |
+
+![demo](./images/select_previous_adjacent_key_scenario_6.gif)
 ## `Adjacent group` union
 <a name="changes-in-index"></a>
 # Changes in Index

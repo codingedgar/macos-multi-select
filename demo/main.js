@@ -39,6 +39,10 @@ window.onkeydown = (e => {
     update({
       type: "SELECT NEXT ADJACENT"
     });
+  } else if (shiftPressed && e.key === "ArrowUp") {
+    update({
+      type: "SELECT PREVIOUS ADJACENT"
+    });
   } else if (e.key === "ArrowDown") {
     update({
       type: "SELECT NEXT"

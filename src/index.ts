@@ -1,5 +1,5 @@
 import { head, init, last, take, union, without } from "ramda";
-import { findAdjacentToKeyInIndex, findNextPivot, groupAdjacentIsDescending } from "./arrayUtils";
+import { findAdjacentToKeyInIndex, findNextPivot, groupAdjacentIsAscending, groupAdjacentIsDescending } from "./arrayUtils";
 
 export type Context = {
   index: string[],
@@ -15,6 +15,7 @@ export type Command =
   | { type: "SELECT NEXT" }
   | { type: "SELECT PREVIOUS" }
   | { type: "SELECT NEXT ADJACENT" }
+  | { type: "SELECT PREVIOUS ADJACENT" }
 
 function listIncludesAndIsNotEmpty(index: string[], key: string) {
   return index.length > 0 && index.includes(key)
@@ -243,6 +244,49 @@ export function multiselect(context: Context, command: Command): Context {
       ...context,
       selected: context.selected
         .concat([context.index[lastSelectedIndex + 1]])
+    }
+  } else if (
+    command.type === "SELECT PREVIOUS ADJACENT" &&
+    context.index.length > 0 &&
+    context.selected.length === 0
+  ) {
+    const pivot =  last(context.index)!;
+    return {
+      ...context,
+      selected: [pivot],
+      adjacentPivot: pivot
+    }
+  } else if (
+    command.type === "SELECT PREVIOUS ADJACENT" &&
+    context.index.length > 0 &&
+    context.selected.length > 1 &&
+    last(context.selected) !== head(context.index) &&
+    last(context.selected) !== context.adjacentPivot &&
+    groupAdjacentIsAscending(context.selected, context.index)
+  ) {
+    return {
+      ...context,
+      selected: init(context.selected)
+    }
+  } else if (
+    command.type === "SELECT PREVIOUS ADJACENT" &&
+    context.index.length > 0 &&
+    last(context.selected) !== head(context.index)
+  ) {
+    
+    const adjacentToLastSelected = findAdjacentToKeyInIndex(
+      context.index,
+      context.selected,
+      last(context.selected)!
+    );
+    
+    const lastSelected = head(adjacentToLastSelected)!;
+    const lastSelectedIndex = context.index.indexOf(lastSelected);
+
+    return {
+      ...context,
+      selected: context.selected
+        .concat([context.index[lastSelectedIndex - 1]])
     }
   } else {
     return context;

@@ -67,6 +67,13 @@ export function groupAdjacentIsDescending(group: string[], index: string[]): boo
   return index.indexOf(ultimate) === index.indexOf(penultimate) - 1
 }
 
+export function groupAdjacentIsAscending(group: string[], index: string[]): boolean {
+  const ultimate = group[group.length - 1];
+  const penultimate = group[group.length - 2];
+
+  return index.indexOf(ultimate) === index.indexOf(penultimate) + 1
+}
+
 export function partitionHeadAndTail<T>(nonEmptyArray: T[]): [T, T[]] {
   return [head(nonEmptyArray)!, tail(nonEmptyArray)];
 }
