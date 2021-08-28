@@ -60,15 +60,11 @@ export function findAdjacentToKeyInIndex(
   return sortedIndex.slice(leftIndex, rightIndex + 1);
 }
 
-export function groupIsAscending(group: string[], index: string[]): boolean {
-  if (group.length < 2) {
-    return true
-  } else {
-    const ultimate = group[group.length - 1];
-    const penultimate = group[group.length - 2];
+export function groupAdjacentIsDescending(group: string[], index: string[]): boolean {
+  const ultimate = group[group.length - 1];
+  const penultimate = group[group.length - 2];
 
-    return index.indexOf(ultimate) > index.indexOf(penultimate)
-  }
+  return index.indexOf(ultimate) === index.indexOf(penultimate) - 1
 }
 
 export function partitionHeadAndTail<T>(nonEmptyArray: T[]): [T, T[]] {

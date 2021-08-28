@@ -1,5 +1,5 @@
 import fc from 'fast-check';
-import { sort, uniq, reverse } from 'ramda';
+import { sort, uniq, reverse, head, last, init, tail } from 'ramda';
 
 export function subsequentSubarray(arr: string[]) {
   return fc.tuple(fc.nat(arr.length), fc.nat(arr.length))
@@ -15,6 +15,10 @@ export function nonEmptySubsequentSubarray(nonEmptyArray: string[]) {
 
 export function index() {
   return fc.set(fc.string())
+}
+
+export function nonEmptyIndex() {
+  return fc.set(fc.string(), { minLength: 1 })
 }
 
 export function ascending (a: number, b:number): number {
@@ -138,5 +142,40 @@ export function indexWithOneAdjacentDescendingSelection() {
     index,
     subArray: reverse(subArray)
   }));
+
+}
+
+/**
+ * @description an index with at least 3 items,
+ * a selection that is min length 1, adjacent, ascending,
+ * not in the start of the index nor the end
+ * and an end 1 after the selection
+ */
+export function indexMin3WithOneAdjacentAscendingSelectionLessThanIndexLast() {
+  return fc
+    .tuple(
+      fc.set(fc.string(), { minLength: 3 }),
+      fc.nat(),
+      fc.nat(),
+    )
+    .map(([index, n1, n2]) => {
+        
+      const n1InRange = n1 % index.length;
+      const n2InRange = n2 % index.length;
+      
+      const start = Math.min(n1InRange, n2InRange, index.length - 3);
+      const end = Math.max(n1InRange, n2InRange, start + 2) + 1;
+      const subArray =  index.slice(start, end);
+      
+      const beforeSelection =  head(subArray)!
+      const afterSelection =  last(subArray)!
+      
+      return {
+        index,
+        adjacentGroup: init(tail(subArray)),
+        beforeSelection,
+        afterSelection,
+      }
+    });
 
 }

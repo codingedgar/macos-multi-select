@@ -1,7 +1,11 @@
 import fc from 'fast-check';
-import { head, last, tail } from 'ramda';
+import { head, last, reverse, tail } from 'ramda';
 import { multiselect } from '../index';
-import { indexWithOneAdjacentAscendingSelection, indexWithOneAdjacentDescendingSelection } from './arbitraries';
+import {
+  indexMin3WithOneAdjacentAscendingSelectionLessThanIndexLast,
+  indexWithOneAdjacentAscendingSelection,
+  indexWithOneAdjacentDescendingSelection
+ } from './arbitraries';
 
 describe("Select Next Adjacent Key", () => {
 
@@ -53,14 +57,14 @@ describe("Select Next Adjacent Key", () => {
           })
 
           const tailSubArray = tail(subArray);
-
+          
           for (let i = 0; i < tailSubArray.length; i++) {
             context = multiselect(
               context,
               {
                 type: "SELECT NEXT ADJACENT",
               }
-            );
+              );
           }
 
           expect(context)
@@ -71,12 +75,11 @@ describe("Select Next Adjacent Key", () => {
             })
         }
       ),
-      // { seed: -221655216, path: "1:1:2:5:4:4:5:8:7:7:11:10:10:12:11:11:11:13:12:14:14:15:2:2:2:5:2:20:2:2:5", endOnFailure: true }
     )
 
   });
 
-  test("When the selected group is ascending then it deselects the next key", () => {
+  test("When the selected group is descending then it deselects the next key", () => {
 
     fc.assert(
       fc.property(
@@ -124,6 +127,197 @@ describe("Select Next Adjacent Key", () => {
               selected: [headSubArray],
               adjacentPivot: headSubArray,
             })
+        }
+      ),
+    )
+
+  });
+
+  test("Ignores the adjacent pivot key (adjacent pivot is always selected)", () => {
+
+    fc.assert(
+      fc.property(
+        fc
+          .tuple(
+            fc.oneof(
+              indexWithOneAdjacentDescendingSelection(),
+              indexWithOneAdjacentAscendingSelection()
+            ),
+            fc.nat(200),
+          )
+        ,
+        ([
+          {
+            index,
+            subArray,
+          },
+          tries,
+        ]) => {
+          
+          const headSubArray = head(subArray)!;
+          const lastSubArray = last(subArray)!;
+
+          let context = multiselect({
+            adjacentPivot: undefined,
+            index,
+            selected: []
+          }, {
+            type: "SELECT ONE",
+            id: headSubArray,
+          });
+          
+          context = multiselect(
+            context,
+            {
+              type: "SELECT ADJACENT",
+              id: lastSubArray,
+            }
+          );
+
+          for (let i = 0; i < tries; i++) {
+            context = multiselect(
+              context,
+              {
+                type: "SELECT NEXT ADJACENT",
+              }
+            );
+          }
+
+          expect(context.selected)
+            .toContain(headSubArray);
+
+        }
+      ),
+    )
+
+  });
+  
+  test("Adjacent group union", () => {
+
+    fc.assert(
+      fc.property(
+        fc
+          .tuple(
+            indexMin3WithOneAdjacentAscendingSelectionLessThanIndexLast(),
+            fc.boolean()
+          )
+          .map(([a,b])=>({
+            ...a,
+            adjacentGroup: b ? a.adjacentGroup : reverse(a.adjacentGroup),
+          }))
+        ,
+        ({
+          index,
+          adjacentGroup,
+          afterSelection,
+          beforeSelection,
+        }) => {
+
+          const headSubArray = head(adjacentGroup)!;
+          const lastSubArray = last(adjacentGroup)!;
+
+          let context = multiselect({
+            adjacentPivot: undefined,
+            index,
+            selected: []
+          }, {
+            type: "SELECT ONE",
+            id: headSubArray,
+          });
+          
+          context = multiselect(
+            context,
+            {
+              type: "SELECT ADJACENT",
+              id: lastSubArray,
+            }
+          );
+          
+          context = multiselect(
+            context,
+            {
+              type: "TOGGLE SELECTION",
+              id: beforeSelection,
+            }
+          );
+
+          expect(multiselect(
+            context,
+            {
+              type: "SELECT NEXT ADJACENT",
+            }
+          ))
+            .toEqual({
+              index,
+              adjacentPivot: beforeSelection,
+              selected: adjacentGroup.concat([beforeSelection]).concat([afterSelection]),
+            });
+
+        }
+      ),
+    )
+
+  });
+
+  test("Limit last index", () => {
+
+    fc.assert(
+      fc.property(
+        fc
+          .tuple(
+            fc.oneof(
+              indexWithOneAdjacentDescendingSelection(),
+              indexWithOneAdjacentAscendingSelection()
+            ),
+            fc.nat(200),
+          )
+        ,
+        ([
+          {
+            index,
+            subArray,
+          },
+          tries,
+        ]) => {
+          
+          const headSubArray = head(subArray)!;
+          const headSubArrayIndex = index.indexOf(headSubArray);
+
+          const lastSubArray = last(subArray)!;
+
+          let context = multiselect({
+            adjacentPivot: undefined,
+            index,
+            selected: []
+          }, {
+            type: "SELECT ONE",
+            id: headSubArray,
+          });
+          
+          context = multiselect(
+            context,
+            {
+              type: "SELECT ADJACENT",
+              id: lastSubArray,
+            }
+          );
+
+          for (let i = 0; i < index.length + tries; i++) {
+            context = multiselect(
+              context,
+              {
+                type: "SELECT NEXT ADJACENT",
+              }
+            );
+          }
+
+          expect(context)
+            .toEqual({
+              index,
+              adjacentPivot: headSubArray,
+              selected: index.slice(headSubArrayIndex, index.length),
+            });
+
         }
       ),
     )

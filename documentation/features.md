@@ -283,8 +283,8 @@
 
 |  |  |
 | --- | ---|
-| Implemented | ❌ |
-| Has tests | ❌ |
+| Implemented | ✅ |
+| Has tests | ✅ |
 | Hot Key | `Shift ⇧ + Arrow Down` |
 
 ![demo](./images/select_next_adjacent_key_scenario_4.gif)
@@ -294,11 +294,22 @@ If the next element to select has an adjacent group of selected keys, it does an
 
 |  |  |
 | --- | ---|
-| Implemented | ❌ |
-| Has tests | ❌ |
+| Implemented | ✅ |
+| Has tests | ✅ |
 | Hot Key | `Shift ⇧ + Arrow Down` |
 
 ![demo](./images/select_next_adjacent_key_scenario_5.gif)
+
+### Limit last index
+Does nothing if the last item is already selected
+
+|  |  |
+| --- | ---|
+| Implemented | ✅ |
+| Has tests | ✅ |
+| Hot Key | `Shift ⇧ + Arrow Down` |
+
+![demo](./images/select_next_adjacent_key_scenario_6.gif)
 
 <a name="select-previous-adjacent-key"></a>
 # Select Previous Adjacent Key
