@@ -1,11 +1,11 @@
-import fc from 'fast-check';
-import { head, last, reverse, tail } from 'ramda';
-import { multiselect } from '../index';
+import fc from "fast-check";
+import { head, last, reverse, tail } from "ramda";
+import { multiselect } from "../index";
 import {
   indexMin3WithOneAdjacentAscendingSelectionLessThanIndexLast,
   indexWithOneAdjacentAscendingSelection,
   indexWithOneAdjacentDescendingSelection
- } from './arbitraries';
+} from "./arbitraries";
 
 describe("Select Next Adjacent Key", () => {
 
@@ -27,10 +27,10 @@ describe("Select Next Adjacent Key", () => {
               index,
               selected: [index[0]],
               adjacentPivot: index[0],
-            })
+            });
         }
       )
-    )
+    );
 
   });
 
@@ -54,7 +54,7 @@ describe("Select Next Adjacent Key", () => {
           }, {
             type: "SELECT ONE",
             id: headSubArray,
-          })
+          });
 
           const tailSubArray = tail(subArray);
           
@@ -64,7 +64,7 @@ describe("Select Next Adjacent Key", () => {
               {
                 type: "SELECT NEXT ADJACENT",
               }
-              );
+            );
           }
 
           expect(context)
@@ -72,10 +72,10 @@ describe("Select Next Adjacent Key", () => {
               index,
               selected: subArray,
               adjacentPivot: headSubArray,
-            })
+            });
         }
       ),
-    )
+    );
 
   });
 
@@ -126,10 +126,10 @@ describe("Select Next Adjacent Key", () => {
               index,
               selected: [headSubArray],
               adjacentPivot: headSubArray,
-            })
+            });
         }
       ),
-    )
+    );
 
   });
 
@@ -188,7 +188,7 @@ describe("Select Next Adjacent Key", () => {
 
         }
       ),
-    )
+    );
 
   });
   
@@ -255,7 +255,7 @@ describe("Select Next Adjacent Key", () => {
 
         }
       ),
-    )
+    );
 
   });
 
@@ -320,7 +320,7 @@ describe("Select Next Adjacent Key", () => {
 
         }
       ),
-    )
+    );
 
   });
 

@@ -1,11 +1,11 @@
-import fc from 'fast-check';
-import { head, last, reverse, tail } from 'ramda';
-import { multiselect } from '../index';
+import fc from "fast-check";
+import { head, last, reverse, tail } from "ramda";
+import { multiselect } from "../index";
 import {
   indexMin3WithOneAdjacentAscendingSelectionLessThanIndexLast,
   indexWithOneAdjacentAscendingSelection,
   indexWithOneAdjacentDescendingSelection
- } from './arbitraries';
+} from "./arbitraries";
 
 describe("Select Previous Adjacent Key", () => {
 
@@ -27,10 +27,10 @@ describe("Select Previous Adjacent Key", () => {
               index,
               selected: [last(index)!],
               adjacentPivot: last(index),
-            })
+            });
         }
       )
-    )
+    );
 
   });
 
@@ -54,7 +54,7 @@ describe("Select Previous Adjacent Key", () => {
           }, {
             type: "SELECT ONE",
             id: headSubArray,
-          })
+          });
           
           for (let i = 0; i < subArray.length - 1; i++) {
             context = multiselect(
@@ -62,7 +62,7 @@ describe("Select Previous Adjacent Key", () => {
               {
                 type: "SELECT PREVIOUS ADJACENT",
               }
-              );
+            );
           }
 
           expect(context)
@@ -70,10 +70,10 @@ describe("Select Previous Adjacent Key", () => {
               index,
               selected: subArray,
               adjacentPivot: headSubArray,
-            })
+            });
         }
       ),
-    )
+    );
   });
 
   test("When the selected group is ascending then it deselects the previous key", () => {
@@ -123,10 +123,10 @@ describe("Select Previous Adjacent Key", () => {
               index,
               selected: [headSubArray],
               adjacentPivot: headSubArray,
-            })
+            });
         }
       ),
-    )
+    );
 
   });
 
@@ -184,7 +184,7 @@ describe("Select Previous Adjacent Key", () => {
             .toContain(headSubArray);
         }
       ),
-    )
+    );
 
   });
   
@@ -251,7 +251,7 @@ describe("Select Previous Adjacent Key", () => {
 
         }
       ),
-    )
+    );
 
   });
 
@@ -316,7 +316,7 @@ describe("Select Previous Adjacent Key", () => {
 
         }
       ),
-    )
+    );
   });
 
 });

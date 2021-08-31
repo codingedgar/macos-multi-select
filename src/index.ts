@@ -4,7 +4,7 @@ import { findAdjacentToKeyInIndex, findNextPivot, groupAdjacentIsAscending, grou
 export type Context = {
   index: string[],
   selected: string[],
-  adjacentPivot: string | undefined,
+  adjacentPivot: string | undefined,
 }
 
 export type Command =
@@ -19,7 +19,7 @@ export type Command =
   | { type: "SELECT ALL" }
 
 function listIncludesAndIsNotEmpty(index: string[], key: string) {
-  return index.length > 0 && index.includes(key)
+  return index.length > 0 && index.includes(key);
 }
 
 export function multiselect(context: Context, command: Command): Context {
@@ -34,7 +34,7 @@ export function multiselect(context: Context, command: Command): Context {
       adjacentPivot: command.id,
     };
   } else if (
-      command.type === 'TOGGLE SELECTION' &&
+    command.type === "TOGGLE SELECTION" &&
       listIncludesAndIsNotEmpty(context.index, command.id) &&
       context.selected.includes(command.id) &&
       context.selected.length === 1
@@ -45,7 +45,7 @@ export function multiselect(context: Context, command: Command): Context {
       adjacentPivot: head(context.index),
     };
   } else if (
-      command.type === 'TOGGLE SELECTION' &&
+    command.type === "TOGGLE SELECTION" &&
       listIncludesAndIsNotEmpty(context.index, command.id) &&
       context.selected.includes(command.id)
   ) {
@@ -62,7 +62,7 @@ export function multiselect(context: Context, command: Command): Context {
       adjacentPivot,
     };
   } else if (
-    command.type === 'TOGGLE SELECTION' &&
+    command.type === "TOGGLE SELECTION" &&
     context.index.includes(command.id)
   ) {
     return {
@@ -75,7 +75,7 @@ export function multiselect(context: Context, command: Command): Context {
       ...context,
       selected: [],
       adjacentPivot: head(context.index)!,
-    }
+    };
   } else if (
     command.type === "SELECT ADJACENT" &&
     listIncludesAndIsNotEmpty(context.index, command.id) &&
@@ -86,7 +86,7 @@ export function multiselect(context: Context, command: Command): Context {
       ...context,
       selected: take(n, context.index),
       adjacentPivot: head(context.index),
-    }
+    };
   } else if (
     command.type === "SELECT ADJACENT" &&
     listIncludesAndIsNotEmpty(context.index, command.id)  &&
@@ -114,7 +114,7 @@ export function multiselect(context: Context, command: Command): Context {
     );
 
     if (pivotIndex > selectionIndex){
-      nextSelection.reverse()
+      nextSelection.reverse();
     }
 
     const toRemove = union(adjacentToStart, adjacentToEnd);
@@ -122,7 +122,7 @@ export function multiselect(context: Context, command: Command): Context {
     return {
       ...context,
       selected: union(without(toRemove, context.selected), nextSelection)
-    }
+    };
   } else if(
     command.type === "SELECT NEXT" &&
     context.index.length &&
@@ -132,13 +132,13 @@ export function multiselect(context: Context, command: Command): Context {
       ...context,
       selected: [context.index[0]],
       adjacentPivot: context.index[0],
-    }
+    };
   } else if (
     command.type === "SELECT NEXT" &&
     context.index.length &&
     context.selected.length
   ) {
-    const pivotIndex = context.index.indexOf(last(context.selected)!)
+    const pivotIndex = context.index.indexOf(last(context.selected)!);
 
     if (pivotIndex < context.index.length - 1) {
       const nextKey = context.index[pivotIndex + 1];
@@ -147,7 +147,7 @@ export function multiselect(context: Context, command: Command): Context {
         ...context,
         selected: [nextKey],
         adjacentPivot: nextKey
-      }
+      };
     } else if (
       !(
         context.selected.length === 1 &&
@@ -159,7 +159,7 @@ export function multiselect(context: Context, command: Command): Context {
         ...context,
         selected: [pivot],
         adjacentPivot: pivot,
-      }
+      };
     } else {
       return context;
     }
@@ -173,13 +173,13 @@ export function multiselect(context: Context, command: Command): Context {
       ...context,
       selected: [pivot],
       adjacentPivot: pivot,
-    }
+    };
   } else if (
     command.type === "SELECT PREVIOUS" &&
     context.index.length &&
     context.selected.length
   ) {
-    const pivotIndex = context.index.indexOf(last(context.selected)!)
+    const pivotIndex = context.index.indexOf(last(context.selected)!);
 
     if (pivotIndex > 0) {
       const prevKey = context.index[pivotIndex - 1];
@@ -187,7 +187,7 @@ export function multiselect(context: Context, command: Command): Context {
         ...context,
         selected: [prevKey],
         adjacentPivot: prevKey
-      }
+      };
     } else if (
       !(
         context.selected.length === 1 &&
@@ -199,7 +199,7 @@ export function multiselect(context: Context, command: Command): Context {
         ...context,
         selected: [pivot],
         adjacentPivot: pivot
-      }
+      };
     } else {
       return context;
     }
@@ -213,7 +213,7 @@ export function multiselect(context: Context, command: Command): Context {
       ...context,
       selected: [pivot],
       adjacentPivot: pivot
-    }
+    };
   } else if (
     command.type === "SELECT NEXT ADJACENT" &&
     context.index.length > 0 &&
@@ -225,7 +225,7 @@ export function multiselect(context: Context, command: Command): Context {
     return {
       ...context,
       selected: init(context.selected)
-    }
+    };
   } else if (
     command.type === "SELECT NEXT ADJACENT" &&
     context.index.length > 0 &&
@@ -245,7 +245,7 @@ export function multiselect(context: Context, command: Command): Context {
       ...context,
       selected: context.selected
         .concat([context.index[lastSelectedIndex + 1]])
-    }
+    };
   } else if (
     command.type === "SELECT PREVIOUS ADJACENT" &&
     context.index.length > 0 &&
@@ -256,7 +256,7 @@ export function multiselect(context: Context, command: Command): Context {
       ...context,
       selected: [pivot],
       adjacentPivot: pivot
-    }
+    };
   } else if (
     command.type === "SELECT PREVIOUS ADJACENT" &&
     context.index.length > 0 &&
@@ -268,7 +268,7 @@ export function multiselect(context: Context, command: Command): Context {
     return {
       ...context,
       selected: init(context.selected)
-    }
+    };
   } else if (
     command.type === "SELECT PREVIOUS ADJACENT" &&
     context.index.length > 0 &&
@@ -288,7 +288,7 @@ export function multiselect(context: Context, command: Command): Context {
       ...context,
       selected: context.selected
         .concat([context.index[lastSelectedIndex - 1]])
-    }
+    };
   } else if (
     command.type === "SELECT ALL" &&
     context.index.length > 0
@@ -297,7 +297,7 @@ export function multiselect(context: Context, command: Command): Context {
       index: context.index,
       selected: context.index,
       adjacentPivot: last(context.index)
-    }
+    };
   } else {
     return context;
   }

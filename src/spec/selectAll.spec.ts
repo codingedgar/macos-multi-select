@@ -1,20 +1,20 @@
-import fc from 'fast-check';
-import { head, last } from 'ramda';
-import { multiselect } from '../index';
-import { index, nonEmptyIndex } from './arbitraries';
+import fc from "fast-check";
+import { head, last } from "ramda";
+import { multiselect } from "../index";
+import { nonEmptyIndex } from "./arbitraries";
 
-describe('Select All', () => {
-  test('should select all', () => {
+describe("Select All", () => {
+  test("should select all", () => {
 
     fc.assert(
       fc.property(
         nonEmptyIndex()
-        .chain(index =>
-          fc.record({
-            index: fc.constant(index),
-            selected: fc.shuffledSubarray(index)
-          })  
-        ),
+          .chain(index =>
+            fc.record({
+              index: fc.constant(index),
+              selected: fc.shuffledSubarray(index)
+            })  
+          ),
         ({
           index,
           selected
@@ -32,13 +32,13 @@ describe('Select All', () => {
               }
             )
           )
-          .toEqual({
-            index,
-            selected: index,
-            adjacentPivot: last(index),
-          })
+            .toEqual({
+              index,
+              selected: index,
+              adjacentPivot: last(index),
+            });
         }
       )
-    )
+    );
   });
-})
+});

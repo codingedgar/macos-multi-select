@@ -1,9 +1,9 @@
-import fc from 'fast-check';
-import { head } from 'ramda';
-import { multiselect } from '../index';
+import fc from "fast-check";
+import { head } from "ramda";
+import { multiselect } from "../index";
 
-describe('Deselect All', () => {
-  test('should deselect all', () => {
+describe("Deselect All", () => {
+  test("should deselect all", () => {
 
     fc.assert(
       fc.property(
@@ -11,16 +11,16 @@ describe('Deselect All', () => {
           fc.string(),
           { minLength: 1 }
         )
-        .chain(index =>
-          fc.record({
-            index: fc.constant(index),
-            selected: fc.set(
-              fc
-                .integer(0, index.length - 1)
-                .map(i => index[i]),
-            ),
-          })  
-        ),
+          .chain(index =>
+            fc.record({
+              index: fc.constant(index),
+              selected: fc.set(
+                fc
+                  .integer(0, index.length - 1)
+                  .map(i => index[i]),
+              ),
+            })  
+          ),
         ({
           index,
           selected
@@ -38,13 +38,13 @@ describe('Deselect All', () => {
               }
             )
           )
-          .toEqual({
-            index,
-            selected: [],
-            adjacentPivot: head(index),
-          })
+            .toEqual({
+              index,
+              selected: [],
+              adjacentPivot: head(index),
+            });
         }
       )
-    )
+    );
   });
-})
+});

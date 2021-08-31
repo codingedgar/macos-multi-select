@@ -1,10 +1,10 @@
-import fc from 'fast-check';
-import { head, last } from 'ramda';
-import { Context, multiselect } from '../index';
-import { nonEmptySubsequentSubarray } from './arbitraries';
+import fc from "fast-check";
+import { head, last } from "ramda";
+import { Context, multiselect } from "../index";
+import { nonEmptySubsequentSubarray } from "./arbitraries";
 
-describe('Select Next Key', () => {
-  test('Should do nothing if no keys selected', () => {
+describe("Select Next Key", () => {
+  test("Should do nothing if no keys selected", () => {
     const initialContext: Context = {
       adjacentPivot: undefined,
       index: [],
@@ -14,11 +14,11 @@ describe('Select Next Key', () => {
     expect(multiselect(initialContext, {
       type: "SELECT NEXT",
     }))
-      .toEqual(initialContext)
+      .toEqual(initialContext);
 
   });
 
-  test('Should start from the top', () => {
+  test("Should start from the top", () => {
 
     fc.assert(
       fc.property(
@@ -38,14 +38,14 @@ describe('Select Next Key', () => {
               index,
               selected: [index[0]],
               adjacentPivot: index[0],
-            })
+            });
         }
       )
-    )
+    );
 
   });
 
-  test('Should never select beyond last key', () => {
+  test("Should never select beyond last key", () => {
     fc.assert(
       fc.property(
         fc.tuple(
@@ -54,15 +54,15 @@ describe('Select Next Key', () => {
             fc.string(), { minLength: 1 }
           )
         )
-        .chain(([extra, index]) =>
-          nonEmptySubsequentSubarray(index)
-          .map(selected => ({
-            index,
-            selected,
-            adjacentPivot: last(selected),
-            extra
-          }))
-        )
+          .chain(([extra, index]) =>
+            nonEmptySubsequentSubarray(index)
+              .map(selected => ({
+                index,
+                selected,
+                adjacentPivot: last(selected),
+                extra
+              }))
+          )
         ,
         ({
           adjacentPivot,
@@ -75,9 +75,9 @@ describe('Select Next Key', () => {
             adjacentPivot,
             index,
             selected
-          }
+          };
 
-          const startOn = index.indexOf(last(selected)!) + 1
+          const startOn = index.indexOf(last(selected)!) + 1;
 
           for (let i = startOn; i < index.length + extra; i++) {
             
@@ -88,11 +88,11 @@ describe('Select Next Key', () => {
             const selected = [i < index.length - 1 ? index[i]: last(index)];
 
             expect(nextContext)
-            .toEqual({
-              index,
-              selected,
-              adjacentPivot: last(selected),
-            })
+              .toEqual({
+                index,
+                selected,
+                adjacentPivot: last(selected),
+              });
             
             prevContext = nextContext;
             
@@ -100,26 +100,26 @@ describe('Select Next Key', () => {
 
         }
       )
-    )
+    );
   });
 
-  test('Should select next from the last selected (not the pivot) given the last command were select adjacent', () => {
+  test("Should select next from the last selected (not the pivot) given the last command were select adjacent", () => {
     fc.assert(
       fc.property(
         fc.tuple(
           fc.boolean(),
           fc.set(
             fc.string(), { minLength: 1 }
-            )
+          )
         )
-        .chain(([undefOrTop, index]) =>
-          fc.nat(index.length - 1)
-          .map(id => ({
-            index,
-            adjacentPivot: undefOrTop ? undefined : head(index),
-            id: index[id],
-          }))
-        )
+          .chain(([undefOrTop, index]) =>
+            fc.nat(index.length - 1)
+              .map(id => ({
+                index,
+                adjacentPivot: undefOrTop ? undefined : head(index),
+                id: index[id],
+              }))
+          )
         ,
         ({
           adjacentPivot,
@@ -137,9 +137,9 @@ describe('Select Next Key', () => {
               type: "SELECT ADJACENT",
               id,
             }
-          )
+          );
 
-          const currentSelectionPivot = index.indexOf(id)
+          const currentSelectionPivot = index.indexOf(id);
           const nextSelection = currentSelectionPivot < index.length - 1
             ? currentSelectionPivot + 1
             : index.length - 1;
@@ -154,36 +154,36 @@ describe('Select Next Key', () => {
               }
             )
           )
-          .toEqual({
-            index,
-            selected: [nextPivot],
-            adjacentPivot: nextPivot,
-          })
+            .toEqual({
+              index,
+              selected: [nextPivot],
+              adjacentPivot: nextPivot,
+            });
 
         }
       )
-    )
-  })
+    );
+  });
   
-  test('Should select next from the last selected even when the selection is bottom to top', () => {
+  test("Should select next from the last selected even when the selection is bottom to top", () => {
     fc.assert(
       fc.property(
         fc.set(
           fc.string(),
           { minLength: 2 }
         )
-        .chain(index =>
-          fc.tuple(
-            fc.nat(index.length - 1),
-            fc.nat(index.length - 1),
+          .chain(index =>
+            fc.tuple(
+              fc.nat(index.length - 1),
+              fc.nat(index.length - 1),
+            )
+              .map(([first, second]) => ({
+                index,
+                adjacentPivot: undefined,
+                first: index[first],
+                second: index[second],
+              }))
           )
-          .map(([first, second]) => ({
-            index,
-            adjacentPivot: undefined,
-            first: index[first],
-            second: index[second],
-          }))
-        )
         ,
         ({
           adjacentPivot,
@@ -202,7 +202,7 @@ describe('Select Next Key', () => {
               type: "SELECT ONE",
               id: first,
             }
-          )
+          );
           
           const context2 = multiselect(
             context1,
@@ -210,9 +210,9 @@ describe('Select Next Key', () => {
               type: "SELECT ADJACENT",
               id: second,
             }
-          )
+          );
 
-          const currentSelectionPivot = index.indexOf(second)
+          const currentSelectionPivot = index.indexOf(second);
           const nextSelection = currentSelectionPivot < index.length - 1
             ? currentSelectionPivot + 1
             : index.length - 1;
@@ -227,15 +227,15 @@ describe('Select Next Key', () => {
               }
             )
           )
-          .toEqual({
-            index,
-            selected: [nextPivot],
-            adjacentPivot: nextPivot,
-          })
+            .toEqual({
+              index,
+              selected: [nextPivot],
+              adjacentPivot: nextPivot,
+            });
 
         }
       ),
-    )
-  })
+    );
+  });
 
-})
+});

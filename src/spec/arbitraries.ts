@@ -1,24 +1,24 @@
-import fc from 'fast-check';
-import { sort, uniq, reverse, head, last, init, tail } from 'ramda';
+import fc, { Arbitrary } from "fast-check";
+import { sort, uniq, reverse, head, last, init, tail } from "ramda";
 
-export function subsequentSubarray(arr: string[]) {
+export function subsequentSubarray(arr: string[]): Arbitrary<string[]> {
   return fc.tuple(fc.nat(arr.length), fc.nat(arr.length))
-  .map(([a, b]) => a < b ? [a, b] : [b, a])
-  .map(([from, to]) => arr.slice(from, to));
+    .map(([a, b]) => a < b ? [a, b] : [b, a])
+    .map(([from, to]) => arr.slice(from, to));
 }
 
-export function nonEmptySubsequentSubarray(nonEmptyArray: string[]) {
+export function nonEmptySubsequentSubarray(nonEmptyArray: string[]): Arbitrary<string[]> {
   return fc.tuple(fc.nat(nonEmptyArray.length), fc.nat(nonEmptyArray.length))
-  .map(([a, b]) => a < b ? [a, b + 1] : [b, a + 1])
-  .map(([from, to]) => nonEmptyArray.slice(from, to));
+    .map(([a, b]) => a < b ? [a, b + 1] : [b, a + 1])
+    .map(([from, to]) => nonEmptyArray.slice(from, to));
 }
 
-export function index() {
-  return fc.set(fc.string())
+export function index(): Arbitrary<string[]> {
+  return fc.set(fc.string());
 }
 
-export function nonEmptyIndex() {
-  return fc.set(fc.string(), { minLength: 1 })
+export function nonEmptyIndex(): Arbitrary<string[]> {
+  return fc.set(fc.string(), { minLength: 1 });
 }
 
 export function ascending (a: number, b:number): number {
@@ -29,14 +29,22 @@ export function descending (a:number, b:number): number {
   return b - a;
 }
 
-export function takeFromTo<T>(array: T[], start: T, end: T) {
+export function takeFromTo<T>(array: T[], start: T, end: T): T[] {
   const startIndex = array.indexOf(start);
   const endIndex = array.indexOf(end) + 1;
 
   return array.slice(startIndex, endIndex);
 }
 
-export function indexWithAdjacentConnections() {
+export function indexWithAdjacentConnections(): Arbitrary<{
+  index:string[],
+  adjacentGroup1: string[],
+  adjacentGroup2: string[],
+  adjacentGroup3: string[],
+  adjacentGroup4: string[],
+  end: string
+  start: string
+}> {
   return fc
     .tuple(
       fc.set(
@@ -75,20 +83,24 @@ export function indexWithAdjacentConnections() {
         ] as const
     )
     .map(([index, startStart, startEnd, endStart, endEnd, start, end]) => ({
-        index,
-        adjacentGroup1: index.slice(startStart, start),
-        adjacentGroup2: index.slice(start + 1, startEnd),
-        // if startEnd is the same as endStart
-        // end can be a member of group3
-        adjacentGroup3: index.slice(endStart + ((startEnd === endStart) ? 1 : 0), end),
-        adjacentGroup4: index.slice(end + 1, endEnd),
-        end: index[end],
-        start: index[start],
-      })
-  )
+      index,
+      adjacentGroup1: index.slice(startStart, start),
+      adjacentGroup2: index.slice(start + 1, startEnd),
+      // if startEnd is the same as endStart
+      // end can be a member of group3
+      adjacentGroup3: index.slice(endStart + ((startEnd === endStart) ? 1 : 0), end),
+      adjacentGroup4: index.slice(end + 1, endEnd),
+      end: index[end],
+      start: index[start],
+    })
+    );
 }
 
-export function indexWithSelection() {
+export function indexWithSelection() : Arbitrary<{
+  index:string[],
+  selected:string[],
+  selectOne:string,
+}>{
   return fc.tuple(
     fc.set(
       fc.string(),
@@ -97,19 +109,22 @@ export function indexWithSelection() {
     fc.array(fc.nat(), { minLength: 1 }),
     fc.nat()
   )
-  .map(([index, selectedIndices, selectOneIndex]) => {
-    const selected = uniq(selectedIndices.map(i => index[i % index.length]));
-    const selectOne = selected[selectOneIndex % selected.length];
+    .map(([index, selectedIndices, selectOneIndex]) => {
+      const selected = uniq(selectedIndices.map(i => index[i % index.length]));
+      const selectOne = selected[selectOneIndex % selected.length];
 
-    return {
-      index,
-      selected,
-      selectOne
-    }
-  })
+      return {
+        index,
+        selected,
+        selectOne
+      };
+    });
 }
 
-export function indexWithOneAdjacentAscendingSelection() {
+export function indexWithOneAdjacentAscendingSelection(): Arbitrary<{
+  index: string[]
+  subArray: string[]
+}> {
   return fc
     .tuple(
       fc.set(fc.string(), { minLength: 2 }),
@@ -128,20 +143,23 @@ export function indexWithOneAdjacentAscendingSelection() {
       return {
         index,
         subArray,
-      }
+      };
     });
 
 }
 
-export function indexWithOneAdjacentDescendingSelection() {
+export function indexWithOneAdjacentDescendingSelection(): Arbitrary<{
+  index: string[]
+  subArray: string[]
+}> {
   return indexWithOneAdjacentAscendingSelection()
-  .map(({
-    index,
-    subArray
-  }) => ({
-    index,
-    subArray: reverse(subArray)
-  }));
+    .map(({
+      index,
+      subArray
+    }) => ({
+      index,
+      subArray: reverse(subArray)
+    }));
 
 }
 
@@ -151,7 +169,12 @@ export function indexWithOneAdjacentDescendingSelection() {
  * not in the start of the index nor the end
  * and an end 1 after the selection
  */
-export function indexMin3WithOneAdjacentAscendingSelectionLessThanIndexLast() {
+export function indexMin3WithOneAdjacentAscendingSelectionLessThanIndexLast() : Arbitrary<{
+  index: string[];
+  adjacentGroup:  string[];
+  beforeSelection: string;
+  afterSelection:string;
+}> {
   return fc
     .tuple(
       fc.set(fc.string(), { minLength: 3 }),
@@ -167,15 +190,15 @@ export function indexMin3WithOneAdjacentAscendingSelectionLessThanIndexLast() {
       const end = Math.max(n1InRange, n2InRange, start + 2) + 1;
       const subArray =  index.slice(start, end);
       
-      const beforeSelection =  head(subArray)!
-      const afterSelection =  last(subArray)!
+      const beforeSelection =  head(subArray)!;
+      const afterSelection =  last(subArray)!;
       
       return {
         index,
         adjacentGroup: init(tail(subArray)),
         beforeSelection,
         afterSelection,
-      }
+      };
     });
-
 }
+
