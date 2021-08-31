@@ -25,6 +25,10 @@ export function ascending (a: number, b:number): number {
   return a - b;
 }
 
+export function ascendingString (a: string, b:string): number {
+  return a > b ? 1 : -1;
+}
+
 export function descending (a:number, b:number): number {
   return b - a;
 }

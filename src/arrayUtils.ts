@@ -81,3 +81,7 @@ export function partitionHeadAndTail<T>(nonEmptyArray: T[]): [T, T[]] {
 export function partitionInitAndLast<T>(nonEmptyArray: T[]): [T[], T] {
   return [init(nonEmptyArray), last(nonEmptyArray)!];
 }
+
+export function isSubset(superset: string[], subset: string[]): boolean {
+  return subset.every(x => superset.includes(x));
+}

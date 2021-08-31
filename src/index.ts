@@ -1,5 +1,5 @@
 import { head, init, last, take, union, without } from "ramda";
-import { findAdjacentToKeyInIndex, findNextPivot, groupAdjacentIsAscending, groupAdjacentIsDescending } from "./arrayUtils";
+import { findAdjacentToKeyInIndex, findNextPivot, groupAdjacentIsAscending, groupAdjacentIsDescending, isSubset } from "./arrayUtils";
 
 export type Context = {
   index: string[],
@@ -17,6 +17,7 @@ export type Command =
   | { type: "SELECT NEXT ADJACENT" }
   | { type: "SELECT PREVIOUS ADJACENT" }
   | { type: "SELECT ALL" }
+  | { type: "MERGE INDEX", index: string[] }
 
 function listIncludesAndIsNotEmpty(index: string[], key: string) {
   return index.length > 0 && index.includes(key);
@@ -297,6 +298,28 @@ export function multiselect(context: Context, command: Command): Context {
       index: context.index,
       selected: context.index,
       adjacentPivot: last(context.index)
+    };
+  } else if (
+    command.type === "MERGE INDEX" &&
+    isSubset(command.index, context.index)
+  ) {
+    return {
+      ...context,
+      index: command.index,
+    };
+  } else if (
+    command.type === "MERGE INDEX" &&
+    context.adjacentPivot !== undefined
+  ) {
+    const selected = context.selected
+      .filter(x => command.index.includes(x));
+    return {
+      index: command.index,
+      adjacentPivot: command.index
+        .includes(context.adjacentPivot)
+        ? context.adjacentPivot
+        : last(selected),
+      selected,
     };
   } else {
     return context;
