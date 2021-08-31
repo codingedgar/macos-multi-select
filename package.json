@@ -10,11 +10,12 @@
         "test": "jest",
         "watch-test": "jest --watch",
         "build": "rm -r dist && tsc",
-        "prepare": "yarn build",
+        "prepare": "husky install && yarn build",
         "build-demo": "parcel build --public-url ./ -d docs demo/index.html",
         "watch-demo": "parcel serve -d docs-dev --port 3000 --hmr-port 3001 demo/index.html",
         "updatePath": "sed -i -- 's/files/.\\//g' dist/files/*.css",
-        "lint": "eslint src/*"
+        "lint": "eslint src/*",
+        "pre-commit": "npx concurrently \"yarn lint\" \"tsc\""
     },
     "bugs": {
         "url": "https://github.com/davidkpiano/xstate/issues"
@@ -24,8 +25,10 @@
         "@types/ramda": "types/npm-ramda#dist",
         "@typescript-eslint/eslint-plugin": "^4.30.0",
         "@typescript-eslint/parser": "^4.30.0",
+        "concurrently": "^6.2.1",
         "eslint": "^7.32.0",
         "fast-check": "^2.17.0",
+        "husky": "^7.0.2",
         "jest": "^27.0.6",
         "parcel-bundler": "^1.12.5",
         "ts-jest": "^27.0.4",
