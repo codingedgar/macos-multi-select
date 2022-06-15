@@ -1,8 +1,9 @@
 {
     "name": "macos-multi-select",
-    "version": "0.5.2",
+    "version": "0.5.3",
     "description": "Given an Index, and an Action, return an array of selected keys with the same behaviour of macOS finder list view selection.",
     "main": "dist/index.js",
+    "module": "dist/index.js",
     "exports": {
         ".": "./dist/index.js",
         "./arrayUtils": "./dist/arrayUtils.js"
@@ -10,7 +11,6 @@
     "repository": "git@github.com:codingedgar/macos-multi-select.git",
     "author": "codingedgar <codingedgar@gmail.com>",
     "license": "MIT",
-    "type": "module",
     "scripts": {
         "test": "jest",
         "watch-test": "jest --watch",
