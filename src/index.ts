@@ -1,29 +1,29 @@
 import { head, init, last, take, union, without } from "ramda";
 import { findAdjacentToKeyInIndex, findNextPivot, groupAdjacentIsAscending, groupAdjacentIsDescending, isSubset } from "./arrayUtils";
 
-export type Context = {
-  index: string[],
-  selected: string[],
-  adjacentPivot: string | undefined,
+export type Context<T extends string = string> = {
+  index: T[],
+  selected: T[],
+  adjacentPivot: T | undefined,
 }
 
-export type Command =
-  | { type: "SELECT ONE", id: string }
-  | { type: "TOGGLE SELECTION", id: string }
+export type Command<T extends string = string> =
+  | { type: "SELECT ONE", id: T }
+  | { type: "TOGGLE SELECTION", id: T }
   | { type: "DESELECT ALL" }
-  | { type: "SELECT ADJACENT", id: string }
+  | { type: "SELECT ADJACENT", id: T }
   | { type: "SELECT NEXT" }
   | { type: "SELECT PREVIOUS" }
   | { type: "SELECT NEXT ADJACENT" }
   | { type: "SELECT PREVIOUS ADJACENT" }
   | { type: "SELECT ALL" }
-  | { type: "MERGE INDEX", index: string[] }
+  | { type: "MERGE INDEX", index: T[] }
 
 function listIncludesAndIsNotEmpty(index: string[], key: string) {
   return index.length > 0 && index.includes(key);
 }
 
-export function multiselect(context: Context, command: Command): Context {
+export function multiselect<T extends string = string>(context: Context<T>, command: Command<T>): Context<T> {
 
   if (
     command.type === "SELECT ONE" &&

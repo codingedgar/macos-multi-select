@@ -1,10 +1,10 @@
 import { head, init, last, tail } from "ramda";
 
-export function findNextPivot(
-  sortedIndex: string[],
-  subarray: string[],
-  previousPivot: string
-): string {
+export function findNextPivot<T extends string>(
+  sortedIndex: T[],
+  subarray: T[],
+  previousPivot: T
+): T {
   const previous = sortedIndex.indexOf(previousPivot);
   let next = previous + 1;
 
@@ -29,11 +29,11 @@ export function findNextPivot(
   return head(sortedIndex)!;
 }
 
-export function findAdjacentToKeyInIndex(
-  sortedIndex: string[],
-  subarray: string[],
-  key: string
-): string[] {
+export function findAdjacentToKeyInIndex<T extends string>(
+  sortedIndex: T[],
+  subarray: T[],
+  key: T
+): T[] {
   const indexOfKey = sortedIndex.indexOf(key);
   let leftIndex = indexOfKey;
   let rightIndex = indexOfKey;

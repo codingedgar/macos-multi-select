@@ -1,5 +1,5 @@
 // @ts-check
-import { multiselect, Command } from '../dist/index'
+import { multiselect, Command } from '../dist/esm/index'
 
 let context = {
   index: [],
