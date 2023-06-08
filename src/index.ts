@@ -308,14 +308,13 @@ export function multiselect<T extends string = string>(context: Context<T>, comm
       index: command.index,
     };
   } else if (
-    command.type === "MERGE INDEX" &&
-    context.adjacentPivot !== undefined
+    command.type === "MERGE INDEX" 
   ) {
     const selected = context.selected
       .filter(x => command.index.includes(x));
     return {
       index: command.index,
-      adjacentPivot: command.index
+      adjacentPivot: context.adjacentPivot && command.index
         .includes(context.adjacentPivot)
         ? context.adjacentPivot
         : last(selected),

@@ -1,7 +1,7 @@
 import fc from "fast-check";
 import { clone, last, sort, union } from "ramda";
 import { Context, multiselect } from "../index";
-import { ascendingString, indexWithOneAdjacentAscendingSelection, indexWithOneAdjacentDescendingSelection, nonEmptyIndex } from "./arbitraries";
+import { ascendingString, indexWithOneAdjacentAscendingSelection, indexWithOneAdjacentDescendingSelection, nonEmptyIndex, nonEmptyIndexes } from "./arbitraries";
 
 describe("Merge Index", () => {
 
@@ -145,7 +145,7 @@ describe("Merge Index", () => {
             index,
             selected: subArray
           };
-
+          
           expect(multiselect(context, {
             type: "MERGE INDEX",
             index: index1
@@ -154,6 +154,30 @@ describe("Merge Index", () => {
               index: index1,
               adjacentPivot: adjacentPivot1,
               selected: subArray1,
+            }));
+        })
+      )
+    );
+  });
+  test("Completely replace Index", () => {
+    fc.assert(
+      fc.property(
+        nonEmptyIndexes()
+        ,(([index,index1]) => {
+          const context: Context = {
+            adjacentPivot: undefined,
+            index,
+            selected: []
+          };
+          
+          expect(multiselect(context, {
+            type: "MERGE INDEX",
+            index: index1
+          }))
+            .toEqual(({
+              index: index1,
+              adjacentPivot: undefined,
+              selected: [],
             }));
         })
       )

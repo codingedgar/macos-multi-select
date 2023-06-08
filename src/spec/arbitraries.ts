@@ -206,3 +206,10 @@ export function indexMin3WithOneAdjacentAscendingSelectionLessThanIndexLast() : 
     });
 }
 
+export function nonEmptyIndexes(): Arbitrary<[string[], string[]]> {
+  return fc.tuple( fc.set(fc.string(), { minLength: 2 }),fc.nat()).map(([index, n]) => {
+    const i = n % index.length;
+    return [index.slice(0, i), index.slice(i)];
+  })
+  ;
+}

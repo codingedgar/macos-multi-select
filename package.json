@@ -1,6 +1,6 @@
 {
     "name": "macos-multi-select",
-    "version": "0.5.6",
+    "version": "0.5.7",
     "description": "Given an Index, and an Action, return an array of selected keys with the same behaviour of macOS finder list view selection.",
     "main": "dist/commonjs/index.js",
     "module": "dist/esm/index.js",
@@ -28,12 +28,12 @@
         "@typescript-eslint/parser": "^4.30.0",
         "concurrently": "^6.2.1",
         "eslint": "^7.32.0",
-        "fast-check": "^2.17.0",
+        "fast-check": "2.17.0",
         "husky": "^7.0.2",
-        "jest": "^27.0.6",
+        "jest": "29.5.0",
         "parcel-bundler": "^1.12.5",
-        "ts-jest": "^27.0.4",
-        "typescript": "^4.3.5"
+        "ts-jest": "29.1.0",
+        "typescript": "5.1.3"
     },
     "dependencies": {
         "ramda": "^0.27.1"
